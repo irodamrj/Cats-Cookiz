@@ -1,34 +1,36 @@
 const mongoose = require('mongoose');
-const Order = require("./order")
-const Address = require(`./address`)
+const Order = require('./order');
+const Address = require(`./address`);
 const Schema = mongoose.Schema;
 const CookerSchema = new Schema({
   name: {
     type: String,
     required: true,
   },
-  address: [{
-    type: Schema.Types.ObjectId,
-    ref: `Address`,
-    required: true
-  }],
+  address: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: `Address`,
+      required: true,
+    },
+  ],
   phoneNo: {
-    type: String, 
-    required: true
+    type: String,
+    required: true,
   },
   email: {
     type: String,
     required: true,
     unique: true,
-    match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
   },
   password: {
     type: String,
     required: true,
-    minlength: 4
+    minlength: 4,
   },
   ranking: {
-    type: Number
+    type: Number,
   },
   aboutCooker: {
     type: String,
@@ -46,20 +48,22 @@ const CookerSchema = new Schema({
     type: String,
   },
   accStatus: {
-    enum: ["Pending ","Approved"],
-    default: "Pending",
-    required : true
+    enum: ['Pending ', 'Approved'],
+    default: 'Pending',
+    required: true,
   },
-  orders:[{
-    type: Schema.Types.ObjectId,
-    ref: 'Order'
-  }],
-  comments:[{
-    type: Schema.Types.ObjectId,
-    ref: 'Comment'
- }], 
- 
-  
+  orders: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Order',
+    },
+  ],
+  comments: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Comment',
+    },
+  ],
 });
 
-module.exports = mongoose.model("Cooker", CookerSchema);
+module.exports = mongoose.model('Cooker', CookerSchema);
