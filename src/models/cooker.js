@@ -4,7 +4,7 @@ const Address = require(`./address`);
 const bcrypt = require('bcryptjs');
 const Schema = mongoose.Schema;
 
-const CookerSchema = new Schema({
+const cookerSchema = new Schema({
   username: {
     type: String,
     required: true,
@@ -34,7 +34,7 @@ const CookerSchema = new Schema({
     required: true,
     minlength: 4,
   },
-  averageRanking: {
+  averageRating: {
     type: Number,
     required: true,
     default: 0,
@@ -70,9 +70,18 @@ const CookerSchema = new Schema({
   ],
 });
 
-CookerSchema.pre('save', async function () {
+cookerSchema.pre('save', function () {
+  let sumOfRatings = 0;
+  this.comments.forEach((item) => {
+    sumOfRatings += item.rating;
+  });
+  const averageRank = sumOfRatings / this.comments.length;
+  this.averageRating = averageRank;
+});
+
+cookerSchema.pre('save', async function () {
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
 
-module.exports = mongoose.model('Cooker', CookerSchema);
+module.exports = mongoose.model('Cooker', cookerSchema);

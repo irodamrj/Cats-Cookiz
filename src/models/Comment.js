@@ -20,6 +20,8 @@ const commentSchema = new Schema(
     rating: {
       type: Number,
       required: true,
+      max: 5,
+      min: 1,
     },
   },
   { timestamps: true }
