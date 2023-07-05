@@ -1,34 +1,43 @@
 const mongoose = require('mongoose');
-const Order = require("./order")
-const Address = require(`./address`)
+const Order = require('./order');
+const Address = require(`./address`);
+const bcrypt = require('bcryptjs');
 const Schema = mongoose.Schema;
+
 const CookerSchema = new Schema({
-  name: {
+  username: {
     type: String,
     required: true,
   },
-  address: [{
-    type: Schema.Types.ObjectId,
-    ref: `Address`,
-    required: true
-  }],
-  phoneNo: {
-    type: String, 
-    required: true
+  address: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: `Address`,
+      required: true,
+    },
+  ],
+  phoneNumber: {
+    type: String,
+    required: true,
   },
   email: {
     type: String,
     required: true,
     unique: true,
-    match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    match: [
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+      'Please provide valid email',
+    ],
   },
   password: {
     type: String,
     required: true,
-    minlength: 4
+    minlength: 4,
   },
-  ranking: {
-    type: Number
+  averageRanking: {
+    type: Number,
+    required: true,
+    default: 0,
   },
   aboutCooker: {
     type: String,
@@ -42,24 +51,28 @@ const CookerSchema = new Schema({
     type: Date,
     required: true,
   },
-  userRole: {
-    type: String,
+  status: {
+    enum: ['Pending ', 'Approved'],
+    default: 'Pending',
+    required: true,
   },
-  accStatus: {
-    enum: ["Pending ","Approved"],
-    default: "Pending",
-    required : true
-  },
-  orders:[{
-    type: Schema.Types.ObjectId,
-    ref: 'Order'
-  }],
-  comments:[{
-    type: Schema.Types.ObjectId,
-    ref: 'Comment'
- }], 
- 
-  
+  orders: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Order',
+    },
+  ],
+  comments: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Comment',
+    },
+  ],
 });
 
-module.exports = mongoose.model("Cooker", CookerSchema);
+CookerSchema.pre('save', async function () {
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});
+
+module.exports = mongoose.model('Cooker', CookerSchema);
