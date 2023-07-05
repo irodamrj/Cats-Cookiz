@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
 const adress = require('./address');
-const Cooker = require('./cooker');
+const Dish = require('./dish');
 const Schema = mongoose.Schema;
 
 const cartSchema = new Schema({
   itemId: [
     {
       type: Schema.Types.ObjectId,
-      ref: `Cooker`,
+      ref: `Dish`,
       required: true,
     },
   ],
@@ -18,11 +18,11 @@ const cartSchema = new Schema({
 });
 
 const customerSchema = new Schema({
-  userRole: {
+  firstName: {
     type: String,
-    default: 'Customer',
+    required: true,
   },
-  name: {
+  lastName: {
     type: String,
     required: true,
   },
@@ -30,18 +30,21 @@ const customerSchema = new Schema({
     type: String,
     required: true,
     unique: true,
-    match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    match: [
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+      'Please provide valid email',
+    ],
   },
   password: {
     type: String,
   },
-  phone_No: {
+  phoneNumber: {
     type: String,
   },
   providerID: {
     type: String,
   },
-  profilePic: {
+  profilePicture: {
     type: String,
   },
   address: [
@@ -51,6 +54,14 @@ const customerSchema = new Schema({
     },
   ],
   cartItems: [cartSchema],
+});
+
+cartSchema.pre('save', function () {
+  let sum = 0;
+  this.itemId.forEach((element) => {
+    sum += element.price;
+  });
+  this.total = sum;
 });
 
 module.exports = mongoose.model('Customer', customerSchema);

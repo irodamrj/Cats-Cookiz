@@ -3,32 +3,30 @@ const Schema = mongoose.Schema;
 const addressSchema = new Schema({
   country: {
     type: String,
-    required: true
+    required: true,
   },
   city: {
     type: String,
-    required: true
+    required: true,
   },
   state: {
     type: String,
-    required: true
   },
   zipcode: {
     type: Number,
-    required: true,
   },
   street: {
     type: String,
     required: true,
   },
-  buildingNo: {
+  buildingNumber: {
     type: Number,
     required: true,
   },
   buildingName: {
-    type: String
+    type: String,
   },
-  flatNo: {
+  flatNumber: {
     type: Number,
     required: true,
   },
@@ -38,4 +36,4 @@ const addressSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model("Address", addressSchema)
+module.exports = mongoose.model('Address', addressSchema);
