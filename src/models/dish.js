@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Cooker = require('./cooker');
 const Schema = mongoose.Schema;
 const DishSchema = new Schema({

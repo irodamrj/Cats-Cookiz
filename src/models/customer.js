@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const adress = require('./address');
 const Dish = require('./dish');
 const Schema = mongoose.Schema;
+const bcrypt = require('bcryptjs');
 
 const cartSchema = new Schema({
   itemId: [
@@ -37,11 +38,12 @@ const customerSchema = new Schema({
   },
   password: {
     type: String,
+    minlength: 6,
   },
   phoneNumber: {
     type: String,
   },
-  providerID: {
+  providerId: {
     type: String,
   },
   profilePicture: {
@@ -63,5 +65,15 @@ cartSchema.pre('save', function () {
   });
   this.total = sum;
 });
+
+customerSchema.pre('save', async function () {
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});
+
+customerSchema.methods.comparePassword = async function (canditatePassword) {
+  const isMatch = await bcrypt.compare(canditatePassword, this.password);
+  return isMatch;
+};
 
 module.exports = mongoose.model('Customer', customerSchema);
