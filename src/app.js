@@ -3,8 +3,6 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 
-const dummy = require('./dummy');
-
 const cookieParser = require('cookie-parser');
 const { expressjwt: jwt } = require('express-jwt');
 const passport = require('passport');
@@ -43,12 +41,6 @@ app.use(
     ],
   })
 );
-
-// app.get('/', (req, res) => {
-//   res.send('homepage');
-// });
-
-// app.use('dummy', dummy);
 
 app.use('/api/auth/customer', authCustomerRoute);
 app.use('/api/auth/cooker', authCookerRoute);
