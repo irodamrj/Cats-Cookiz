@@ -55,7 +55,7 @@ const customerSchema = new Schema({
       ref: `Address`,
     },
   ],
-  cartItems: [cartSchema],
+  cartItems: cartSchema,
 });
 
 cartSchema.pre('save', function () {

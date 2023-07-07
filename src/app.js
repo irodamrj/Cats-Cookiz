@@ -12,7 +12,7 @@ const passportSetup = require('./config/passport');
 //database
 const db = require('./db');
 
-//routes
+//route middleware
 const authCustomerRoute = require('./controllers/authForCustomer');
 const authCookerRoute = require('./controllers/authForCooker');
 
@@ -42,6 +42,7 @@ app.use(
   })
 );
 
+//routes
 app.use('/api/auth/customer', authCustomerRoute);
 app.use('/api/auth/cooker', authCookerRoute);
 

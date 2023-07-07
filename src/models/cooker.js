@@ -53,7 +53,7 @@ const cookerSchema = new Schema({
   },
   status: {
     type: String,
-    enum: ['Pending ', 'Approved'],
+    enum: ['Pending', 'Approved'],
     default: 'Pending',
     required: true,
   },

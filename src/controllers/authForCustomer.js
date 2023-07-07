@@ -72,11 +72,7 @@ router.post('/signup', async (req, res) => {
   });
   const payload = createUserToken(customer);
   attachCookiesToResponse(res, payload);
-  return res.send(payload);
-});
-
-router.get('/login', async (req, res) => {
-  return res.send('simple login');
+  return res.send(customer);
 });
 
 router.post('/login', async (req, res) => {
@@ -95,7 +91,7 @@ router.post('/login', async (req, res) => {
   }
   const payload = createUserToken(customer);
   attachCookiesToResponse(res, payload);
-  res.send(payload);
+  res.send(customer);
 });
 
 //logout route
@@ -105,7 +101,7 @@ router.get('/logout', (req, res) => {
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 14 * 1000,
   });
-  res.end();
+  res.send('Customer logged out');
 });
 
 module.exports = router;
