@@ -30,7 +30,7 @@ router.get(
     const payload = createUserToken(req.user);
     console.log(payload);
     attachCookiesToResponse(res, payload);
-    return res.send(payload);
+    return res.send(req.user);
   }
 );
 
