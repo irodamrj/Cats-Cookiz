@@ -12,10 +12,11 @@ const passportSetup = require('./config/passport');
 //database
 const db = require('./db');
 
-//routes
+//route middleware
 const authCustomerRoute = require('./controllers/authForCustomer');
 const authCookerRoute = require('./controllers/authForCooker');
 const customerRoute = require('./controllers/customers');
+const authForAdmin = require('./controllers/authForAdmin');
 
 app.use(morgan('tiny'));
 
@@ -43,9 +44,12 @@ app.use(
   })
 );
 
+//routes
 app.use('/api/auth/customer', authCustomerRoute);
 app.use('/api/auth/cooker', authCookerRoute);
 app.use('api/customer', customerRoute);
+app.use('api/auth/admin', authForAdmin);
+
 const port = 5000;
 console.log(process.env.PORT);
 

@@ -2,7 +2,7 @@ const createUserToken = (user) => {
   return {
     name: user.firstName,
     email: user.email,
-    exp: 14 * 24 * 3600,
+    expiresIn: '14d',
   };
 };
 
@@ -10,7 +10,7 @@ const createCookerToken = (cooker) => {
   return {
     userName: cooker.username,
     email: cooker.email,
-    exp: 14 * 24 * 3600,
+    expiresIn: '14d',
   };
 };
 
