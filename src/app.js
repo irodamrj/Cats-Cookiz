@@ -1,10 +1,52 @@
+require('express-async-errors');
+require('dotenv').config();
 const express = require('express');
-const apiRoutes = require('./routes');
-const db = require('./db');
-//const User=require("./models/User");
+const app = express();
 
 const cookieParser = require('cookie-parser');
+const { expressjwt: jwt } = require('express-jwt');
 const passport = require('passport');
+const morgan = require('morgan');
+const passportSetup = require('./config/passport');
+
+//database
+const db = require('./db');
+
+//route middleware
+const authCustomerRoute = require('./controllers/authForCustomer');
+const authCookerRoute = require('./controllers/authForCooker');
+const authForAdmin = require('./controllers/authForAdmin');
+
+app.use(morgan('tiny'));
+
+app.use(express.json());
+app.use(cookieParser(process.env.SECRET_KEY));
+
+app.use(
+  '/api',
+  jwt({
+    secret: process.env.SECRET_KEY, // secret key is always required
+    algorithms: ['HS256'], // encryption algorithm is always required
+    requestProperty: 'auth', // This ensures that decoded token details will be available on req.auth else req.user is the default.
+    getToken: (req) => req.signedCookies['token'] ?? req.cookies['token'],
+  }).unless({
+    path: [
+      '/api/auth/customer/google',
+      '/api/auth/customer/google/callback',
+      '/api/auth/customer/facebook',
+      '/api/auth/customer/facebook/callback',
+      '/api/auth/customer/signup',
+      '/api/auth/customer/login',
+      '/api/auth/cooker/signup',
+      '/api/auth/cooker/login',
+    ],
+  })
+);
+
+//routes
+app.use('/api/auth/customer', authCustomerRoute);
+app.use('/api/auth/cooker', authCookerRoute);
+app.use('api/auth/admin', authForAdmin);
 
 const port = 5000;
 console.log(process.env.PORT);
@@ -20,16 +62,6 @@ if (process.env.NODE_ENV !== 'test') {
     console.info('Connected to db');
   });
 }
-
-const app = express();
-
-app.use(express.json());
-
-app.use('/api', apiRoutes);
-
-app.use(cookieParser());
-
-app.use(passport.initialize());
 
 if (process.env.NODE_ENV !== 'test') {
   app.listen(port, () => {

@@ -32,7 +32,7 @@ const cookerSchema = new Schema({
   password: {
     type: String,
     required: true,
-    minlength: 4,
+    minlength: 6,
   },
   averageRating: {
     type: Number,
@@ -44,15 +44,16 @@ const cookerSchema = new Schema({
     required: true,
   },
   openingHour: {
-    type: Date,
+    type: String,
     required: true,
   },
   closingHour: {
-    type: Date,
+    type: String,
     required: true,
   },
   status: {
-    enum: ['Pending ', 'Approved'],
+    type: String,
+    enum: ['Pending', 'Approved'],
     default: 'Pending',
     required: true,
   },
@@ -83,5 +84,10 @@ cookerSchema.pre('save', async function () {
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
+
+cookerSchema.methods.comparePassword = async function (canditatePassword) {
+  const isMatch = await bcrypt.compare(canditatePassword, this.password);
+  return isMatch;
+};
 
 module.exports = mongoose.model('Cooker', cookerSchema);
