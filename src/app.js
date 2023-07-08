@@ -15,6 +15,7 @@ const db = require('./db');
 //routes
 const authCustomerRoute = require('./controllers/authForCustomer');
 const authCookerRoute = require('./controllers/authForCooker');
+const customerRoute = require('./controllers/customers');
 
 app.use(morgan('tiny'));
 
@@ -44,7 +45,7 @@ app.use(
 
 app.use('/api/auth/customer', authCustomerRoute);
 app.use('/api/auth/cooker', authCookerRoute);
-
+app.use('api/customer', customerRoute);
 const port = 5000;
 console.log(process.env.PORT);
 
