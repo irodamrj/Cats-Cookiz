@@ -20,7 +20,7 @@ const orderSchema = new Schema(
     status: {
       type: String,
       enum: ['Received', 'Cancelled', 'Delayed', 'Completed'],
-      default: 'Received',
+      default: 'Completed',
       required: true,
     },
     deliveryAddress: {

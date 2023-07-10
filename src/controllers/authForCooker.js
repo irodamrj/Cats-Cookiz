@@ -1,13 +1,15 @@
 const express = require('express');
 const routes = express.Router();
+
 const { attachCookiesToResponse } = require('../utils/jwt');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
 const Cooker = require('../models/cooker');
 const { createCookerToken } = require('../utils/createToken');
 const Adress = require('../models/address');
+const checkCookie = require('../middleware/checkCookie');
 
-routes.post('/signup', async (req, res) => {
+routes.post('/signup', checkCookie, async (req, res) => {
   const {
     email,
     password,
@@ -45,7 +47,7 @@ routes.post('/signup', async (req, res) => {
   return res.send(cooker);
 });
 
-routes.post('/login', async (req, res) => {
+routes.post('/login', checkCookie, async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     throw new CustomError.BadRequestError('Please provide email and password');
