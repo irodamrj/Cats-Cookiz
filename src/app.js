@@ -51,6 +51,7 @@ app.use(
       '/api/auth/customer/login',
       '/api/auth/cooker/signup',
       '/api/auth/cooker/login',
+      '/api/auth/admin/login',
     ],
   })
 );
