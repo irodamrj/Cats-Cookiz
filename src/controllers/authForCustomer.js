@@ -6,6 +6,7 @@ const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
 const Customer = require('../models/customer');
 const { createUserToken } = require('../utils/createToken');
+const bcrypt = require('bcryptjs');
 //Customer authentication
 const router = express.Router();
 
@@ -63,12 +64,14 @@ router.post('/signup', async (req, res) => {
     throw new CustomError.BadRequestError(
       'password cannot be null or less than 6 characters'
     );
+
   }
+  const hashedPassword = await bcrypt.hash(password, 10);
   const customer = await Customer.create({
     firstName: firstName,
     lastName: lastName,
     email: email,
-    password: password,
+    password: hashedPassword,
   });
   const payload = createUserToken(customer);
   attachCookiesToResponse(res, payload);
