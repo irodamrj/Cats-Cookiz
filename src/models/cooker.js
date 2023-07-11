@@ -9,13 +9,11 @@ const cookerSchema = new Schema({
     type: String,
     required: true,
   },
-  address: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: `Address`,
-      required: true,
-    },
-  ],
+  address: {
+    type: Schema.Types.ObjectId,
+    ref: `Address`,
+    required: true,
+  },
   phoneNumber: {
     type: String,
     required: true,

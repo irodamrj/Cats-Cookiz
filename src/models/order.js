@@ -19,7 +19,7 @@ const orderSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ['Received', 'Cancelled', 'Delayed', 'Completed'],
+      enum: ['Received', 'Cancelled', 'Delayed', 'Completed', 'Delivered'],
       default: 'Completed',
       required: true,
     },
@@ -34,7 +34,8 @@ const orderSchema = new Schema(
     },
     totalAmount: {
       type: Number,
-      required: true,
+      default: 0,
+      // required: true,
     },
   },
   { timestamps: true }

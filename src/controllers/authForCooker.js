@@ -8,6 +8,7 @@ const Cooker = require('../models/cooker');
 const { createCookerToken } = require('../utils/createToken');
 const Adress = require('../models/address');
 const checkCookie = require('../middleware/checkCookie');
+const { cookerAuth } = require('../middleware/authorization');
 
 routes.post('/signup', checkCookie, async (req, res) => {
   const {
@@ -54,12 +55,12 @@ routes.post('/login', checkCookie, async (req, res) => {
   }
   const cooker = await Cooker.findOne({ email });
   if (!cooker) {
-    throw new CustomError.UnauthenticatedError('Invalid Credentials');
+    throw new CustomError.UnauthenticatedError('Invalid Credentials try again');
   }
 
   const isPasswordMatch = await cooker.comparePassword(password);
   if (!isPasswordMatch) {
-    throw new CustomError.UnauthenticatedError('Invalid Credentials');
+    throw new CustomError.UnauthenticatedError('Invalid Credentials second');
   }
   const payload = createCookerToken(cooker);
   attachCookiesToResponse(res, payload);

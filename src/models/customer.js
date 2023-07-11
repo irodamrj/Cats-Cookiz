@@ -49,12 +49,11 @@ const customerSchema = new Schema({
   profilePicture: {
     type: String,
   },
-  address: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: `Address`,
-    },
-  ],
+  address: {
+    type: Schema.Types.ObjectId,
+    ref: `Address`,
+  },
+
   cartItems: cartSchema,
 });
 

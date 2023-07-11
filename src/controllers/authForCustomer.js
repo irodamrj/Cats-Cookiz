@@ -7,6 +7,8 @@ const CustomError = require('../errors');
 const Customer = require('../models/customer');
 const { createUserToken } = require('../utils/createToken');
 const checkCookie = require('../middleware/checkCookie');
+const { customerAuth } = require('../middleware/authorization');
+
 //Customer authentication
 const router = express.Router();
 
