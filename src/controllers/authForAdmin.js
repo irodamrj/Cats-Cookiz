@@ -1,29 +1,29 @@
 const express = require('express');
 const router = express.Router();
 const { attachCookiesToResponse } = require('../utils/jwt');
-const { createCookerToken } = require('../utils/createToken');
+const { createAdminToken } = require('../utils/createToken');
 const checkCookie = require('../middleware/checkCookie');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
 const Admin = require('../models/admin');
 
 router.post('/login', checkCookie, async (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
+  const { username, password } = req.body;
+  if (!username || !password) {
     throw new CustomError.BadRequestError('Please provide email and password');
   }
-  const admin = await Admin.findOne({ email });
+  const admin = await Admin.findOne({ username });
 
-  if (!customer) {
+  if (!admin) {
     throw new CustomError.UnauthenticatedError('Invalid Credentials');
   }
   const isPasswordCorrect = await admin.comparePassword(password);
   if (!isPasswordCorrect) {
     throw new CustomError.UnauthenticatedError('Invalid Credentials');
   }
-  const payload = createCookerToken(admin);
+  const payload = createAdminToken(admin);
   attachCookiesToResponse(res, payload);
-  res.send(admin);
+  res.status(StatusCodes.OK).send(admin);
 });
 
 //logout route

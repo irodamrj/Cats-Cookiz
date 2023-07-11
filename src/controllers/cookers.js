@@ -6,7 +6,6 @@ const { isCookerApproved } = require('../middleware/authorization');
 const Cooker = require('../models/cooker');
 const Order = require('../models/order');
 const Dish = require('../models/dish');
-const { trusted } = require('mongoose');
 const Address = require('../models/address');
 
 const router = express.Router();

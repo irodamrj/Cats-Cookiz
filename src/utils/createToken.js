@@ -8,10 +8,17 @@ const createUserToken = (user) => {
 
 const createCookerToken = (cooker) => {
   return {
-    userName: cooker.username,
+    username: cooker.username,
     email: cooker.email,
     expiresIn: '14d',
   };
 };
 
-module.exports = { createUserToken, createCookerToken };
+const createAdminToken = (admin) => {
+  return {
+    username: admin.username,
+    expiresIn: '14d',
+  };
+};
+
+module.exports = { createUserToken, createCookerToken, createAdminToken };

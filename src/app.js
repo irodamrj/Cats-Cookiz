@@ -23,7 +23,11 @@ const cookerRoute = require('./controllers/cookers');
 //middlewares
 const errorHandlerMiddleware = require('./middleware/error-handler');
 const notFoundMiddleware = require('./middleware/not-found');
-const { cookerAuth, customerAuth } = require('./middleware/authorization');
+const {
+  cookerAuth,
+  customerAuth,
+  adminAuth,
+} = require('./middleware/authorization');
 
 app.use(morgan('tiny'));
 
@@ -54,7 +58,7 @@ app.use(
 //routes
 app.use('/api/auth/customer', authCustomerRoute);
 app.use('/api/auth/cooker', authCookerRoute);
-app.use('api/auth/admin', authForAdmin);
+app.use('/api/auth/admin', adminAuth, authForAdmin);
 app.use('/api/cooker', cookerAuth, cookerRoute);
 
 app.use(notFoundMiddleware);

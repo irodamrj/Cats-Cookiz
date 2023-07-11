@@ -1,5 +1,6 @@
 const Cooker = require('../models/cooker');
 const Customer = require('../models/customer');
+const Admin = require('../models/admin');
 const CustomError = require('../errors/index');
 
 const cookerAuth = async (req, res, next) => {
@@ -35,4 +36,15 @@ const customerAuth = async (req, res, next) => {
   }
 };
 
-module.exports = { cookerAuth, customerAuth, isCookerApproved };
+const adminAuth = async (req, res, next) => {
+  const admin = await Admin.findOne({ username: req.auth.username });
+  if (admin) {
+    next();
+  } else {
+    throw new CustomError.UnauthorizedError(
+      'You are not authorized to reach this endpoint'
+    );
+  }
+};
+
+module.exports = { cookerAuth, customerAuth, isCookerApproved, adminAuth };
