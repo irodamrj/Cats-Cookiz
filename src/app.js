@@ -59,7 +59,7 @@ app.use(
 //routes
 app.use('/api/auth/customer', authCustomerRoute);
 app.use('/api/auth/cooker', authCookerRoute);
-app.use('/api/auth/admin', adminAuth, authForAdmin);
+app.use('/api/auth/admin', authForAdmin);
 app.use('/api/cooker', cookerAuth, cookerRoute);
 
 app.use(notFoundMiddleware);

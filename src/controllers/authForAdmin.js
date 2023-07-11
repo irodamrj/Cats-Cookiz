@@ -6,6 +6,7 @@ const checkCookie = require('../middleware/checkCookie');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
 const Admin = require('../models/admin');
+const { adminAuth } = require('../middleware/authorization');
 
 router.post('/login', checkCookie, async (req, res) => {
   const { username, password } = req.body;
@@ -27,7 +28,7 @@ router.post('/login', checkCookie, async (req, res) => {
 });
 
 //logout route
-router.get('/logout', (req, res) => {
+router.get('/logout', adminAuth, (req, res) => {
   res.clearCookie('token', {
     signed: true,
     httpOnly: true,

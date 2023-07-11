@@ -68,7 +68,7 @@ routes.post('/login', checkCookie, async (req, res) => {
 });
 
 //logout route
-routes.get('/logout', (req, res) => {
+routes.get('/logout', cookerAuth, (req, res) => {
   res.clearCookie('token', {
     signed: true,
     httpOnly: true,
