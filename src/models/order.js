@@ -16,6 +16,12 @@ const orderSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: `Customer`,
       required: true,
+    },  
+    //I added cookerID
+    cookerId: {
+      type: Schema.Types.ObjectId,
+      ref: `Cooker`,
+      // required: true,
     },
     status: {
       type: String,

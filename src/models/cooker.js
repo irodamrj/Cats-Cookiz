@@ -55,12 +55,14 @@ const cookerSchema = new Schema({
     default: 'Pending',
     required: true,
   },
+  //WE CAN CHECK IF COOKER HAS ORDERS OR NOT BY FILTERING IN ORDER SCHEMA BY COOKERID
   orders: [
     {
       type: Schema.Types.ObjectId,
       ref: 'Order',
     },
   ],
+  
   comments: [
     {
       type: Schema.Types.ObjectId,

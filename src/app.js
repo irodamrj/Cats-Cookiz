@@ -17,7 +17,10 @@ const db = require('./db');
 //routes
 const authCustomerRoute = require('./controllers/authForCustomer');
 const authCookerRoute = require('./controllers/authForCooker');
+const customerRoute = require('./controllers/customers');
 const authForAdmin = require('./controllers/authForAdmin');
+const orderRoute = require('./controllers/orders');
+const adminRoute = require('./controllers/admin');
 const cookerRoute = require('./controllers/cookers');
 const public = require('./controllers/publicRoutes/public');
 
@@ -59,8 +62,12 @@ app.use(
 
 //routes
 app.use('/api/auth/customer', authCustomerRoute);
+app.use('/api/order', orderRoute);
 app.use('/api/auth/cooker', authCookerRoute);
+app.use('/api/customer', customerRoute);
 app.use('/api/auth/admin', authForAdmin);
+app.use('/api/admin', adminRoute);
+
 app.use('/api/cooker', cookerAuth, cookerRoute);
 app.use('/home', public);
 
