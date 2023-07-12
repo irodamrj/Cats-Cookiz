@@ -10,7 +10,6 @@ const Customer = require('../models/customer');
 const { createUserToken } = require('../utils/createToken');
 const checkCookie = require('../middleware/checkCookie');
 const { customerAuth } = require('../middleware/authorization');
-
 //Customer authentication
 const router = express.Router();
 
@@ -68,18 +67,13 @@ router.post('/signup', checkCookie, async (req, res) => {
     throw new CustomError.BadRequestError(
       'password cannot be null or less than 6 characters'
     );
+
   }
-  // const customerCart= await Cart.create({
-  //   itemId:[],
-  //   total:0
-  // })
-  //haha
   const customer = await Customer.create({
     firstName: firstName,
     lastName: lastName,
     email: email,
     password: password,
-    // cart: customerCart
   });
   const payload = createUserToken(customer);
   attachCookiesToResponse(res, payload);
@@ -99,10 +93,6 @@ router.post('/login', checkCookie, async (req, res) => {
   if (!customer) {
     throw new CustomError.UnauthenticatedError('Invalid Credenti');
   }
-  // const isPasswordCorrect = await customer.comparePassword(password);
-  // if (!isPasswordCorrect) {
-  //   throw new CustomError.UnauthenticatedError('Invalid Credentials');
-  // }
   const payload = createUserToken(customer);
   attachCookiesToResponse(res, payload);
   res.send(customer);
