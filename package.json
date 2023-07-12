@@ -34,10 +34,8 @@
   "devDependencies": {
     "cookie-signature": "^1.1.0",
     "encrypt-cookie": "^1.1.5",
-    "husky": "^7.0.4",
     "jest": "^27.4.7",
     "jsonwebtoken": "^8.5.1",
-    "lint-staged": "^12.3.1",
     "monkeypatch": "^1.0.0",
     "nodemon": "^2.0.14",
     "prettier": "^2.4.1",

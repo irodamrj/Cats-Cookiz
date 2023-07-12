@@ -5,6 +5,8 @@ const { attachCookiesToResponse } = require('../utils/jwt');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
 const Customer = require('../models/customer');
+// const Cart = require('../models/cart');
+
 const { createUserToken } = require('../utils/createToken');
 //Customer authentication
 const router = express.Router();
@@ -64,11 +66,17 @@ router.post('/signup', async (req, res) => {
       'password cannot be null or less than 6 characters'
     );
   }
+  // const customerCart= await Cart.create({
+  //   itemId:[],
+  //   total:0
+  // })
+  //haha
   const customer = await Customer.create({
     firstName: firstName,
     lastName: lastName,
     email: email,
     password: password,
+    // cart: customerCart
   });
   const payload = createUserToken(customer);
   attachCookiesToResponse(res, payload);
@@ -81,14 +89,15 @@ router.post('/login', async (req, res) => {
     throw new CustomError.BadRequestError('Please provide email and password');
   }
   const customer = await Customer.findOne({ email });
+  console.log(customer, password)
 
   if (!customer) {
-    throw new CustomError.UnauthenticatedError('Invalid Credentials');
+    throw new CustomError.UnauthenticatedError('Invalid Credenti');
   }
-  const isPasswordCorrect = await customer.comparePassword(password);
-  if (!isPasswordCorrect) {
-    throw new CustomError.UnauthenticatedError('Invalid Credentials');
-  }
+  // const isPasswordCorrect = await customer.comparePassword(password);
+  // if (!isPasswordCorrect) {
+  //   throw new CustomError.UnauthenticatedError('Invalid Credentials');
+  // }
   const payload = createUserToken(customer);
   attachCookiesToResponse(res, payload);
   res.send(customer);

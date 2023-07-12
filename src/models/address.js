@@ -20,7 +20,7 @@ const addressSchema = new Schema({
     required: true,
   },
   buildingNumber: {
-    type: Number,
+    type: String,
     required: true,
   },
   buildingName: {

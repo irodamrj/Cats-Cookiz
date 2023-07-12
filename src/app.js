@@ -17,6 +17,7 @@ const authCustomerRoute = require('./controllers/authForCustomer');
 const authCookerRoute = require('./controllers/authForCooker');
 const customerRoute = require('./controllers/customers');
 const authForAdmin = require('./controllers/authForAdmin');
+const orderRoute = require('./controllers/orders');
 
 app.use(morgan('tiny'));
 
@@ -46,9 +47,11 @@ app.use(
 
 //routes
 app.use('/api/auth/customer', authCustomerRoute);
+app.use('/api/order', orderRoute);
+
 app.use('/api/auth/cooker', authCookerRoute);
-app.use('api/customer', customerRoute);
-app.use('api/auth/admin', authForAdmin);
+app.use('/api/customer', customerRoute);
+app.use('/api/auth/admin', authForAdmin);
 
 const port = 5000;
 console.log(process.env.PORT);
