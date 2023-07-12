@@ -83,7 +83,7 @@ router.get('/orders/:id', async (req, res) => {
   ]);
 
   if (!orders) {
-    throw new CustomError.BadRequestError('Order not found');
+    throw new CustomError.NotFoundError('Order not found');
   }
   return res.status(StatusCodes.OK).send(orders);
 });
@@ -98,7 +98,7 @@ router.patch('/orders/:id', async (req, res) => {
   );
 
   if (!order) {
-    throw new CustomError.BadRequestError(`Order with Id ${orderId} not found`);
+    throw new CustomError.NotFoundError(`Order with Id ${orderId} not found`);
   }
 
   const updatedOrder = await Order.findByIdAndUpdate(
@@ -134,7 +134,7 @@ router.delete('/dishes/:id', async (req, res) => {
   const dish = await Dish.findOneAndDelete({ cookerId: cooker, _id: dishId });
 
   if (!dish) {
-    throw new CustomError.BadRequestError(`Dish with Id ${dishId} not found`);
+    throw new CustomError.NotFoundError(`Dish with Id ${dishId} not found`);
   }
 
   return res.status(StatusCodes.OK).send(dish + ' is deleted successfully');
@@ -155,7 +155,7 @@ router.patch('/dishes/:id', async (req, res) => {
     { new: true }
   );
   if (!dish) {
-    throw new CustomError.BadRequestError('Dish not found');
+    throw new CustomError.NotFoundError('Dish not found');
   }
   return res.status(StatusCodes.OK).send(dish + ' is updated successfully');
 });

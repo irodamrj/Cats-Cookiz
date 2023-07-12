@@ -19,6 +19,7 @@ const authCustomerRoute = require('./controllers/authForCustomer');
 const authCookerRoute = require('./controllers/authForCooker');
 const authForAdmin = require('./controllers/authForAdmin');
 const cookerRoute = require('./controllers/cookers');
+const public = require('./controllers/publicRoutes/public');
 
 //middlewares
 const errorHandlerMiddleware = require('./middleware/error-handler');
@@ -61,6 +62,7 @@ app.use('/api/auth/customer', authCustomerRoute);
 app.use('/api/auth/cooker', authCookerRoute);
 app.use('/api/auth/admin', authForAdmin);
 app.use('/api/cooker', cookerAuth, cookerRoute);
+app.use('/home', public);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
