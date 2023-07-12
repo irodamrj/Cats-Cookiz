@@ -19,8 +19,8 @@ const orderSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ['Received', 'Cancelled', 'Delayed', 'Completed'],
-      default: 'Received',
+      enum: ['Received', 'Cancelled', 'Delayed', 'Completed', 'Delivered'],
+      default: 'Completed',
       required: true,
     },
     deliveryAddress: {
@@ -34,7 +34,8 @@ const orderSchema = new Schema(
     },
     totalAmount: {
       type: Number,
-      required: true,
+      default: 0,
+      // required: true,
     },
   },
   { timestamps: true }

@@ -1,8 +1,10 @@
-require('express-async-errors');
 require('dotenv').config();
+require('express-async-errors');
+
 const express = require('express');
 const app = express();
 
+//packages
 const cookieParser = require('cookie-parser');
 const { expressjwt: jwt } = require('express-jwt');
 const passport = require('passport');
@@ -12,10 +14,21 @@ const passportSetup = require('./config/passport');
 //database
 const db = require('./db');
 
-//route middleware
+//routes
 const authCustomerRoute = require('./controllers/authForCustomer');
 const authCookerRoute = require('./controllers/authForCooker');
 const authForAdmin = require('./controllers/authForAdmin');
+const cookerRoute = require('./controllers/cookers');
+const public = require('./controllers/publicRoutes/public');
+
+//middlewares
+const errorHandlerMiddleware = require('./middleware/error-handler');
+const notFoundMiddleware = require('./middleware/not-found');
+const {
+  cookerAuth,
+  customerAuth,
+  adminAuth,
+} = require('./middleware/authorization');
 
 app.use(morgan('tiny'));
 
@@ -39,6 +52,7 @@ app.use(
       '/api/auth/customer/login',
       '/api/auth/cooker/signup',
       '/api/auth/cooker/login',
+      '/api/auth/admin/login',
     ],
   })
 );
@@ -46,7 +60,12 @@ app.use(
 //routes
 app.use('/api/auth/customer', authCustomerRoute);
 app.use('/api/auth/cooker', authCookerRoute);
-app.use('api/auth/admin', authForAdmin);
+app.use('/api/auth/admin', authForAdmin);
+app.use('/api/cooker', cookerAuth, cookerRoute);
+app.use('/home', public);
+
+app.use(notFoundMiddleware);
+app.use(errorHandlerMiddleware);
 
 const port = 5000;
 console.log(process.env.PORT);

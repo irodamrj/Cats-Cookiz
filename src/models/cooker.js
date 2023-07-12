@@ -9,13 +9,11 @@ const cookerSchema = new Schema({
     type: String,
     required: true,
   },
-  address: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: `Address`,
-      required: true,
-    },
-  ],
+  address: {
+    type: Schema.Types.ObjectId,
+    ref: `Address`,
+    required: true,
+  },
   phoneNumber: {
     type: String,
     required: true,
@@ -69,6 +67,12 @@ const cookerSchema = new Schema({
       ref: 'Comment',
     },
   ],
+  paymentType: [
+    {
+      type: String,
+      enum: ['card', 'cash'],
+    },
+  ],
 });
 
 cookerSchema.pre('save', function () {
@@ -88,6 +92,15 @@ cookerSchema.pre('save', async function () {
 cookerSchema.methods.comparePassword = async function (canditatePassword) {
   const isMatch = await bcrypt.compare(canditatePassword, this.password);
   return isMatch;
+};
+
+cookerSchema.methods.addPaymentMethod = function (type) {
+  if (type) {
+    this.paymentType.addToSet(type);
+  }
+  if (type === 'card') {
+    this.status = 'Approved';
+  }
 };
 
 module.exports = mongoose.model('Cooker', cookerSchema);

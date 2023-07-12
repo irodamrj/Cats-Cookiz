@@ -6,6 +6,9 @@ const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
 const Customer = require('../models/customer');
 const { createUserToken } = require('../utils/createToken');
+const checkCookie = require('../middleware/checkCookie');
+const { customerAuth } = require('../middleware/authorization');
+
 //Customer authentication
 const router = express.Router();
 
@@ -52,7 +55,7 @@ router.get(
 );
 
 //local signup
-router.post('/signup', async (req, res) => {
+router.post('/signup', checkCookie, async (req, res) => {
   console.log('signup called');
   const { firstName, lastName, email, password } = req.body;
   const emailAlreadyExists = await Customer.findOne({ email });
@@ -75,8 +78,10 @@ router.post('/signup', async (req, res) => {
   return res.send(customer);
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', checkCookie, async (req, res) => {
   const { email, password } = req.body;
+
+  console.log();
   if (!email || !password) {
     throw new CustomError.BadRequestError('Please provide email and password');
   }
@@ -95,7 +100,7 @@ router.post('/login', async (req, res) => {
 });
 
 //logout route
-router.get('/logout', (req, res) => {
+router.get('/logout', customerAuth, (req, res) => {
   res.clearCookie('token', {
     signed: true,
     httpOnly: true,
