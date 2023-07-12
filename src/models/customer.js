@@ -48,12 +48,7 @@ const customerSchema = new Schema({
   profilePicture: {
     type: String,
   },
-  address: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: `Address`,
-    },
-  ],
+
   cart: {
     type: cartSchema,
     default:{
@@ -62,12 +57,18 @@ const customerSchema = new Schema({
     }
     // ref: `Cart`,
   },
+
+  address: {
+    type: Schema.Types.ObjectId,
+    ref: `Address`,
+  },
+
 });
 
 
 customerSchema.pre('save', async function () {
   const salt = await bcrypt.genSalt(10);
-  this.password = bcrypt.hash(this.password, salt);
+  this.password = await bcrypt.hash(this.password, salt);
 });
 
 customerSchema.methods.comparePassword = async function (canditatePassword) {
