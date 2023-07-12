@@ -16,11 +16,17 @@ const orderSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: `Customer`,
       required: true,
+    },  
+    //I added cookerID
+    cookerId: {
+      type: Schema.Types.ObjectId,
+      ref: `Cooker`,
+      // required: true,
     },
     status: {
       type: String,
-      enum: ['Received', 'Cancelled', 'Delayed', 'Completed'],
-      default: 'Received',
+      enum: ['Received', 'Cancelled', 'Delayed', 'Completed', 'Delivered'],
+      default: 'Completed',
       required: true,
     },
     deliveryAddress: {
@@ -34,7 +40,8 @@ const orderSchema = new Schema(
     },
     totalAmount: {
       type: Number,
-      required: true,
+      default: 0,
+      // required: true,
     },
   },
   { timestamps: true }

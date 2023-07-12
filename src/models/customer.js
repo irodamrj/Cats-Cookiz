@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-const adress = require('./address');
-const Dish = require('./dish');
 const Schema = mongoose.Schema;
 const bcrypt = require('bcryptjs');
 
@@ -16,6 +14,7 @@ const cartSchema = new Schema({
     type: Number,
     required: true,
   },
+
 });
 
 const customerSchema = new Schema({
@@ -49,15 +48,33 @@ const customerSchema = new Schema({
   profilePicture: {
     type: String,
   },
-  address: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: `Address`,
-    },
-  ],
-  cartItems: cartSchema,
+
+  cart: {
+    type: cartSchema,
+    default:{
+      itemId:[],
+      total: 0
+    }
+    // ref: `Cart`,
+  },
+
+  address: {
+    type: Schema.Types.ObjectId,
+    ref: `Address`,
+  },
+
 });
 
+
+customerSchema.pre('save', async function () {
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});
+
+customerSchema.methods.comparePassword = async function (canditatePassword) {
+  const isMatch = await bcrypt.compare(canditatePassword, this.password);
+  return isMatch;
+};
 cartSchema.pre('save', function () {
   let sum = 0;
   this.itemId.forEach((element) => {
@@ -65,15 +82,5 @@ cartSchema.pre('save', function () {
   });
   this.total = sum;
 });
-
-customerSchema.pre('save', async function () {
-  const salt = await bcrypt.genSalt(10);
-  this.password = bcrypt.hash(this.password, salt);
-});
-
-customerSchema.methods.comparePassword = async function (canditatePassword) {
-  const isMatch = await bcrypt.compare(canditatePassword, this.password);
-  return isMatch;
-};
 
 module.exports = mongoose.model('Customer', customerSchema);

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const addressSchema = new Schema({
+  
   country: {
     type: String,
     required: true,
@@ -20,7 +21,7 @@ const addressSchema = new Schema({
     required: true,
   },
   buildingNumber: {
-    type: Number,
+    type: String,
     required: true,
   },
   buildingName: {

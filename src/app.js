@@ -1,8 +1,10 @@
-require('express-async-errors');
 require('dotenv').config();
+require('express-async-errors');
+
 const express = require('express');
 const app = express();
 
+//packages
 const cookieParser = require('cookie-parser');
 const { expressjwt: jwt } = require('express-jwt');
 const passport = require('passport');
@@ -20,6 +22,24 @@ const authForAdmin = require('./controllers/authForAdmin.js');
 
 //Swagger middleware 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+//routes
+const authCustomerRoute = require('./controllers/authForCustomer');
+const authCookerRoute = require('./controllers/authForCooker');
+const customerRoute = require('./controllers/customers');
+const authForAdmin = require('./controllers/authForAdmin');
+const orderRoute = require('./controllers/orders');
+const adminRoute = require('./controllers/admin');
+const cookerRoute = require('./controllers/cookers');
+const public = require('./controllers/publicRoutes/public');
+
+//middlewares
+const errorHandlerMiddleware = require('./middleware/error-handler');
+const notFoundMiddleware = require('./middleware/not-found');
+const {
+  cookerAuth,
+  customerAuth,
+  adminAuth,
+} = require('./middleware/authorization');
 
 app.use(morgan('tiny'));
 
@@ -43,14 +63,24 @@ app.use(
       '/api/auth/customer/login',
       '/api/auth/cooker/signup',
       '/api/auth/cooker/login',
+      '/api/auth/admin/login',
     ],
   })
 );
 
 //routes
 app.use('/api/auth/customer', authCustomerRoute);
+app.use('/api/order', orderRoute);
 app.use('/api/auth/cooker', authCookerRoute);
-app.use('api/auth/admin', authForAdmin);
+app.use('/api/customer', customerRoute);
+app.use('/api/auth/admin', authForAdmin);
+app.use('/api/admin', adminRoute);
+
+app.use('/api/cooker', cookerAuth, cookerRoute);
+app.use('/home', public);
+
+app.use(notFoundMiddleware);
+app.use(errorHandlerMiddleware);
 
 const port = 5001;
 console.log(process.env.PORT);

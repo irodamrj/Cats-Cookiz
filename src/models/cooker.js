@@ -9,13 +9,11 @@ const cookerSchema = new Schema({
     type: String,
     required: true,
   },
-  address: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: `Address`,
-      required: true,
-    },
-  ],
+  address: {
+    type: Schema.Types.ObjectId,
+    ref: `Address`,
+    required: true,
+  },
   phoneNumber: {
     type: String,
     required: true,
@@ -57,16 +55,24 @@ const cookerSchema = new Schema({
     default: 'Pending',
     required: true,
   },
+  //WE CAN CHECK IF COOKER HAS ORDERS OR NOT BY FILTERING IN ORDER SCHEMA BY COOKERID
   orders: [
     {
       type: Schema.Types.ObjectId,
       ref: 'Order',
     },
   ],
+  
   comments: [
     {
       type: Schema.Types.ObjectId,
       ref: 'Comment',
+    },
+  ],
+  paymentType: [
+    {
+      type: String,
+      enum: ['card', 'cash'],
     },
   ],
 });
@@ -88,6 +94,15 @@ cookerSchema.pre('save', async function () {
 cookerSchema.methods.comparePassword = async function (canditatePassword) {
   const isMatch = await bcrypt.compare(canditatePassword, this.password);
   return isMatch;
+};
+
+cookerSchema.methods.addPaymentMethod = function (type) {
+  if (type) {
+    this.paymentType.addToSet(type);
+  }
+  if (type === 'card') {
+    this.status = 'Approved';
+  }
 };
 
 module.exports = mongoose.model('Cooker', cookerSchema);
