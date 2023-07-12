@@ -1,6 +1,5 @@
 
 const express = require('express');
-
 const CustomerModel = require('../models/customer');
 const CustomError = require('../errors');
 const routes = express.Router();
@@ -8,9 +7,7 @@ const OrderModel = require('../models/order');
 const { where } = require('../models/customer');
 const CommentModel = require('../models/comment');
 const CookerModel = require('../models/cooker');
-const _ = require('lodash');
-
-
+const _ = require('lodash'); //to compare objects
 
 routes.get('/all', async (req, res) => {
     

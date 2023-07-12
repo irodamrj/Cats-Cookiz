@@ -3,9 +3,7 @@ const express = require('express');
 const CustomerModel = require('../models/customer');
 const CustomError = require('../errors');
 const routes = express.Router();
-const OrderModel = require('../models/order');
 const AddressModel = require('../models/address');
-const { where } = require('../models/customer');
 
 routes.get('/', async (req, res) => {
  
