@@ -51,7 +51,7 @@ routes.get('/all', async (req, res) => {
       });
       const populatedOrder = await OrderModel.populate(order, 'dishes');
       const cookerIds = populatedOrder.dishes
-      .filter(item => item.cookerId)
+    //   .filter(item => item.cookerId)
       .map(item => item.cookerId);
       const areAllIdsSimilar = cookerIds.length > 0 && cookerIds.every((id)  => _.isEqual(id, cookerIds[0]));
       console.log(areAllIdsSimilar)
