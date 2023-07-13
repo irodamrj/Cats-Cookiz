@@ -67,7 +67,6 @@ router.post('/signup', checkCookie, async (req, res) => {
     throw new CustomError.BadRequestError(
       'password cannot be null or less than 6 characters'
     );
-
   }
   const customer = await Customer.create({
     firstName: firstName,
@@ -77,21 +76,19 @@ router.post('/signup', checkCookie, async (req, res) => {
   });
   const payload = createUserToken(customer);
   attachCookiesToResponse(res, payload);
-  return res.send(customer);
+  return res.status(StatusCodes.OK).send(customer);
 });
 
 router.post('/login', checkCookie, async (req, res) => {
   const { email, password } = req.body;
 
-  console.log();
   if (!email || !password) {
     throw new CustomError.BadRequestError('Please provide email and password');
   }
   const customer = await Customer.findOne({ email });
-  console.log(customer, password)
 
   if (!customer) {
-    throw new CustomError.UnauthenticatedError('Invalid Credenti');
+    throw new CustomError.UnauthenticatedError('Invalid Credentials second');
   }
   const payload = createUserToken(customer);
   attachCookiesToResponse(res, payload);

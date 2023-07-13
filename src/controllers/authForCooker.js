@@ -1,6 +1,8 @@
 const express = require('express');
 const routes = express.Router();
 
+const bcrypt = require('bcryptjs');
+
 const { attachCookiesToResponse } = require('../utils/jwt');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
@@ -30,12 +32,16 @@ routes.post('/signup', checkCookie, async (req, res) => {
       'password cannot be null or less than 5 characters'
     );
   }
+
+  const salt = await bcrypt.genSalt(10);
+  const hashed = await bcrypt.hash(password, salt);
+
   const addressObject = await Adress.create(req.body.address);
   address = addressObject;
   const cooker = await Cooker.create({
     email,
     address,
-    password,
+    password: hashed,
     username,
     phoneNumber,
     aboutCooker,
@@ -45,7 +51,7 @@ routes.post('/signup', checkCookie, async (req, res) => {
   console.log(cooker);
   const payload = createCookerToken(cooker);
   attachCookiesToResponse(res, payload);
-  return res.send(cooker);
+  return res.status(StatusCodes.OK).send(cooker);
 });
 
 routes.post('/login', checkCookie, async (req, res) => {
@@ -58,13 +64,18 @@ routes.post('/login', checkCookie, async (req, res) => {
     throw new CustomError.UnauthenticatedError('Invalid Credentials try again');
   }
 
-  const isPasswordMatch = await cooker.comparePassword(password);
-  if (!isPasswordMatch) {
+  // const salt = await bcrypt.genSalt(10);
+  // const hashed = await bcrypt.hash(password, salt);
+  // console.log('hashed ' + hashed);
+  // console.log('from db ' + cooker.password);
+
+  const isMatch = await bcrypt.compare(password, cooker.password);
+  if (!isMatch) {
     throw new CustomError.UnauthenticatedError('Invalid Credentials second');
   }
   const payload = createCookerToken(cooker);
   attachCookiesToResponse(res, payload);
-  res.send(cooker);
+  res.status(StatusCodes.OK).send(cooker);
 });
 
 //logout route

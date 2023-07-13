@@ -62,7 +62,7 @@ const cookerSchema = new Schema({
       ref: 'Order',
     },
   ],
-  
+
   comments: [
     {
       type: Schema.Types.ObjectId,
@@ -86,15 +86,15 @@ cookerSchema.pre('save', function () {
   this.averageRating = averageRank;
 });
 
-cookerSchema.pre('save', async function () {
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-});
+// cookerSchema.pre('save', async function () {
+//   const salt = await bcrypt.genSalt(10);
+//   this.password = await bcrypt.hash(this.password, salt);
+// });
 
-cookerSchema.methods.comparePassword = async function (canditatePassword) {
-  const isMatch = await bcrypt.compare(canditatePassword, this.password);
-  return isMatch;
-};
+// cookerSchema.methods.comparePassword = async function (canditatePassword) {
+//   const isMatch = await bcrypt.compare(canditatePassword, this.password);
+//   return isMatch;
+// };
 
 cookerSchema.methods.addPaymentMethod = function (type) {
   if (type) {

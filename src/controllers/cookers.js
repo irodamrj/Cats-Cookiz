@@ -39,7 +39,7 @@ router.patch('/', async (req, res) => {
 
   const updatedCooker = await Cooker.findOneAndUpdate(
     { email: req.auth.email },
-    { phonenumber, aboutCooker, openingHour, closingHour, newAddress },
+    { phonenumber, aboutCooker, openingHour, closingHour },
     { new: true }
   ).populate('address');
 
@@ -142,7 +142,7 @@ router.delete('/dishes/:id', async (req, res) => {
 
 router.get('/dishes', async (req, res) => {
   const cooker = await Cooker.findOne({ email: req.auth.email }, { _id: 1 });
-  const dishes = await Dish.find({ cookerId: cooker }, { _id: 0 });
+  const dishes = await Dish.find({ cookerId: cooker });
   return res.status(StatusCodes.OK).send(dishes);
 });
 
