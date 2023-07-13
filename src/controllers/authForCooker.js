@@ -1,6 +1,8 @@
 const express = require('express');
 const routes = express.Router();
 
+const bcrypt = require('bcryptjs');
+
 const { attachCookiesToResponse } = require('../utils/jwt');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
@@ -19,8 +21,9 @@ routes.post('/signup', checkCookie, async (req, res) => {
     aboutCooker,
     openingHour,
     closingHour,
+    address,
   } = req.body;
-  let { address } = req.body;
+
   const emailAlreadyExists = await Cooker.findOne({ email });
   if (emailAlreadyExists) {
     throw new CustomError.BadRequestError('Email already exists');
@@ -30,22 +33,25 @@ routes.post('/signup', checkCookie, async (req, res) => {
       'password cannot be null or less than 5 characters'
     );
   }
-  const addressObject = await Adress.create(req.body.address);
-  address = addressObject;
+
+  const hashed = await bcrypt.hash(password, 10);
+
+  const addressObject = await Adress.create(address);
+
   const cooker = await Cooker.create({
-    email,
-    address,
-    password,
-    username,
-    phoneNumber,
-    aboutCooker,
-    openingHour,
-    closingHour,
+    email: email,
+    address: addressObject._id,
+    password: hashed,
+    username: username,
+    phoneNumber: phoneNumber,
+    aboutCooker: aboutCooker,
+    openingHour: openingHour,
+    closingHour: closingHour,
   });
-  console.log(cooker);
+
   const payload = createCookerToken(cooker);
   attachCookiesToResponse(res, payload);
-  return res.send(cooker);
+  return res.status(StatusCodes.OK).send(cooker);
 });
 
 routes.post('/login', checkCookie, async (req, res) => {
@@ -58,13 +64,14 @@ routes.post('/login', checkCookie, async (req, res) => {
     throw new CustomError.UnauthenticatedError('Invalid Credentials try again');
   }
 
-  const isPasswordMatch = await cooker.comparePassword(password);
-  if (!isPasswordMatch) {
+  const isMatch = await bcrypt.compare(password, cooker.password);
+  if (!isMatch) {
     throw new CustomError.UnauthenticatedError('Invalid Credentials second');
   }
+
   const payload = createCookerToken(cooker);
   attachCookiesToResponse(res, payload);
-  res.send(cooker);
+  res.status(StatusCodes.OK).send(cooker);
 });
 
 //logout route
