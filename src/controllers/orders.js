@@ -100,34 +100,6 @@ routes.post('/', async (req, res) => {
 
   return res.status(StatusCodes.CREATED).send(order);
 
-  // const order = new OrderModel({
-  //   dishes,
-  //   customerId,
-  //   deliveryAddress,
-  //   expectedDeliveryTime,
-  // });
-  // const populatedOrder = await OrderModel.populate(order, 'dishes');
-  // const cookerIds = populatedOrder.dishes
-  //   .filter((item) => item.cookerId)
-  //   .map((item) => item.cookerId);
-  // const areAllIdsSimilar =
-  //   cookerIds.length > 0 &&
-  //   cookerIds.every((id) => _.isEqual(id, cookerIds[0]));
-  // console.log(areAllIdsSimilar);
-  // if (!areAllIdsSimilar) {
-  //   throw new CustomError.InternalServerError('Internal server error');
-  // }
-  // order.cookerId = cookerIds[0];
-  // const totalPrice = populatedOrder.dishes.reduce(
-  //   (sum, dish) => sum + dish.price,
-  //   0
-  // );
-
-  // order.totalAmount = totalPrice;
-
-  // const createdOrder = await order.save();
-
-  // res.json(createdOrder);
 });
 
 routes.delete('/:id', async (req, res) => {

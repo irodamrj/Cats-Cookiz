@@ -49,6 +49,7 @@ router.patch('/', async (req, res) => {
 });
 
 router.get('/orders', async (req, res) => {
+
   const cooker = await Cooker.findOne({ email: req.auth.email }, { _id: 1 });
   const orders = await Order.find({ cookerId: cooker._id }).populate([
     { path: 'dishes', model: 'Dish' },
@@ -134,6 +135,7 @@ router.delete('/dishes/:id', async (req, res) => {
 
 router.get('/dishes', async (req, res) => {
   const cooker = await Cooker.findOne({ email: req.auth.email }, { _id: 1 });
+
   const dishes = await Dish.find({ cookerId: cooker });
   return res.status(StatusCodes.OK).send(dishes);
 });
