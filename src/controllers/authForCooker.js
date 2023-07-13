@@ -21,8 +21,9 @@ routes.post('/signup', checkCookie, async (req, res) => {
     aboutCooker,
     openingHour,
     closingHour,
+    address,
   } = req.body;
-  let { address } = req.body;
+
   const emailAlreadyExists = await Cooker.findOne({ email });
   if (emailAlreadyExists) {
     throw new CustomError.BadRequestError('Email already exists');
@@ -33,22 +34,21 @@ routes.post('/signup', checkCookie, async (req, res) => {
     );
   }
 
-  const salt = await bcrypt.genSalt(10);
-  const hashed = await bcrypt.hash(password, salt);
+  const hashed = await bcrypt.hash(password, 10);
 
-  const addressObject = await Adress.create(req.body.address);
-  address = addressObject;
+  const addressObject = await Adress.create(address);
+
   const cooker = await Cooker.create({
-    email,
-    address,
+    email: email,
+    address: addressObject._id,
     password: hashed,
-    username,
-    phoneNumber,
-    aboutCooker,
-    openingHour,
-    closingHour,
+    username: username,
+    phoneNumber: phoneNumber,
+    aboutCooker: aboutCooker,
+    openingHour: openingHour,
+    closingHour: closingHour,
   });
-  console.log(cooker);
+
   const payload = createCookerToken(cooker);
   attachCookiesToResponse(res, payload);
   return res.status(StatusCodes.OK).send(cooker);
@@ -64,15 +64,11 @@ routes.post('/login', checkCookie, async (req, res) => {
     throw new CustomError.UnauthenticatedError('Invalid Credentials try again');
   }
 
-  // const salt = await bcrypt.genSalt(10);
-  // const hashed = await bcrypt.hash(password, salt);
-  // console.log('hashed ' + hashed);
-  // console.log('from db ' + cooker.password);
-
   const isMatch = await bcrypt.compare(password, cooker.password);
   if (!isMatch) {
     throw new CustomError.UnauthenticatedError('Invalid Credentials second');
   }
+
   const payload = createCookerToken(cooker);
   attachCookiesToResponse(res, payload);
   res.status(StatusCodes.OK).send(cooker);

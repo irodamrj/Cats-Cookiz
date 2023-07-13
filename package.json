@@ -10,8 +10,7 @@
     "test": "yarn validate && jest --passWithNoTests",
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|json)\"",
     "validate": "yarn format && yarn lint",
-    "validate-staged": "lint-staged",
-    "postinstall": "husky install && husky add .husky/pre-commit \"yarn validate-staged\" && husky add .husky/pre-push \"yarn test\""
+    "validate-staged": "lint-staged"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

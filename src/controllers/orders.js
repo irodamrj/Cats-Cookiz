@@ -89,7 +89,7 @@ routes.post('/', async (req, res) => {
     isAddressNew: isAddressNew,
   });
 
-  const customerToUpdate = await CustomerModel.findOneAndUpdate(
+  await CustomerModel.findOneAndUpdate(
     { email: customer.email },
     {
       'cart.itemId': [],
