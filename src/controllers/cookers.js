@@ -141,9 +141,10 @@ router.get('/dishes', async (req, res) => {
 router.patch('/dishes/:id', async (req, res) => {
   const dishId = req.params.id;
   const cooker = await Cooker.findOne({ email: req.auth.email }, { _id: 1 });
+  const { name, description, price, image } = req.body;
   const dish = await Dish.findOneAndUpdate(
     { cookerId: cooker, _id: dishId },
-    req.body,
+    { name, description, price, image },
     { new: true }
   );
   if (!dish) {
