@@ -5,6 +5,7 @@ const { attachCookiesToResponse } = require('../utils/jwt');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
 const Customer = require('../models/customer');
+const bcrypt = require('bcryptjs');
 // const Cart = require('../models/cart');
 
 const { createUserToken } = require('../utils/createToken');
@@ -60,6 +61,7 @@ router.post('/signup', checkCookie, async (req, res) => {
   console.log('signup called');
   const { firstName, lastName, email, password } = req.body;
   const emailAlreadyExists = await Customer.findOne({ email });
+
   if (emailAlreadyExists) {
     throw new CustomError.BadRequestError('Email already exists');
   }
@@ -67,32 +69,38 @@ router.post('/signup', checkCookie, async (req, res) => {
     throw new CustomError.BadRequestError(
       'password cannot be null or less than 6 characters'
     );
-
   }
+
+  const hashed = await bcrypt.hash(password, 10);
+
   const customer = await Customer.create({
     firstName: firstName,
     lastName: lastName,
     email: email,
-    password: password,
+    password: hashed,
   });
   const payload = createUserToken(customer);
   attachCookiesToResponse(res, payload);
-  return res.send(customer);
+  return res.status(StatusCodes.OK).send(customer);
 });
 
 router.post('/login', checkCookie, async (req, res) => {
   const { email, password } = req.body;
 
-  console.log();
   if (!email || !password) {
     throw new CustomError.BadRequestError('Please provide email and password');
   }
   const customer = await Customer.findOne({ email });
-  console.log(customer, password)
 
   if (!customer) {
-    throw new CustomError.UnauthenticatedError('Invalid Credenti');
+    throw new CustomError.UnauthenticatedError('Invalid Credentials second');
   }
+
+  const isMatch = await bcrypt.compare(password, customer.password);
+  if (!isMatch) {
+    throw new CustomError.UnauthenticatedError('Invalid Credentials second');
+  }
+
   const payload = createUserToken(customer);
   attachCookiesToResponse(res, payload);
   res.send(customer);

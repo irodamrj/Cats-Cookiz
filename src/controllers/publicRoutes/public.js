@@ -5,7 +5,7 @@ const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../../errors');
 
 router.get('/', async (req, res) => {
-  const dishes = await Dish.find().populate('cookerId');
+  const dishes = await Dish.find({}).populate('cookerId');
   return res.status(StatusCodes.OK).send(dishes);
 });
 
