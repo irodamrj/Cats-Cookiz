@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
   const cooker = await Cooker.findOne({ email: req.auth.email }).populate(
     'address'
   );
-  return res.send(cooker);
+  return res.status(StatusCodes.OK).json({ cooker });
 });
 
 router.patch('/', async (req, res) => {
@@ -34,7 +34,6 @@ router.patch('/', async (req, res) => {
       },
       address
     );
-    console.log('updated');
   }
 
   const updatedCooker = await Cooker.findOneAndUpdate(
@@ -45,18 +44,17 @@ router.patch('/', async (req, res) => {
 
   return res
     .status(StatusCodes.OK)
-    .send(updatedCooker + ' is updated successfully');
+    .json(updatedCooker + ' is updated successfully');
 });
 
 router.get('/orders', async (req, res) => {
-
   const cooker = await Cooker.findOne({ email: req.auth.email }, { _id: 1 });
   const orders = await Order.find({ cookerId: cooker._id }).populate([
     { path: 'dishes', model: 'Dish' },
     { path: 'deliveryAddress', model: 'Address' },
   ]);
 
-  return res.status(StatusCodes.OK).send(orders);
+  return res.status(StatusCodes.OK).json({ orders });
 });
 
 router.get('/orders/:id', async (req, res) => {
@@ -74,9 +72,10 @@ router.get('/orders/:id', async (req, res) => {
   if (!order) {
     throw new CustomError.NotFoundError('Order not found');
   }
-  return res.status(StatusCodes.OK).send(order);
+  return res.status(StatusCodes.OK).json({ order });
 });
 
+//just can mark a order as delivered
 router.patch('/orders/:id', async (req, res) => {
   const orderId = req.params.id;
   const orderStatus = req.body.orderStatus;
@@ -96,13 +95,13 @@ router.patch('/orders/:id', async (req, res) => {
 
   await Order.findByIdAndUpdate(
     { _id: orderId },
-    { status: orderStatus },
+    { status: 'Delivered' },
     { new: true }
   );
 
   return res
     .status(StatusCodes.OK)
-    .send(
+    .json(
       `status of the order with Id ${orderId} is updated to ${orderStatus}`
     );
 });
@@ -116,9 +115,9 @@ router.post('/dishes', isCookerApproved, async (req, res) => {
     price: price,
     description: description,
     image: image,
-    cookerId: cooker,
+    cookerId: cooker._id,
   });
-  return res.status(StatusCodes.OK).send(newDish);
+  return res.status(StatusCodes.OK).json({ newDish });
 });
 
 router.delete('/dishes/:id', async (req, res) => {
@@ -130,14 +129,14 @@ router.delete('/dishes/:id', async (req, res) => {
     throw new CustomError.NotFoundError(`Dish with Id ${dishId} not found`);
   }
 
-  return res.status(StatusCodes.OK).send(dish + ' is deleted successfully');
+  return res.status(StatusCodes.OK).json(dish + ' is deleted successfully');
 });
 
 router.get('/dishes', async (req, res) => {
   const cooker = await Cooker.findOne({ email: req.auth.email }, { _id: 1 });
 
-  const dishes = await Dish.find({ cookerId: cooker });
-  return res.status(StatusCodes.OK).send(dishes);
+  const dishes = await Dish.find({ cookerId: cooker._id });
+  return res.status(StatusCodes.OK).json({ dishes });
 });
 
 router.patch('/dishes/:id', async (req, res) => {
@@ -152,7 +151,7 @@ router.patch('/dishes/:id', async (req, res) => {
   if (!dish) {
     throw new CustomError.NotFoundError('Dish not found');
   }
-  return res.status(StatusCodes.OK).send(dish + ' is updated successfully');
+  return res.status(StatusCodes.OK).json(dish + ' is updated successfully');
 });
 
 router.post('/paymentType', async (req, res) => {
@@ -162,7 +161,7 @@ router.post('/paymentType', async (req, res) => {
 
   return res
     .status(StatusCodes.OK)
-    .send(
+    .json(
       `payment type ${req.body.paymentType} added. Current payment options are: ${cooker.paymentType}`
     );
 });

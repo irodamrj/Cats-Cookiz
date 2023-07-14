@@ -51,7 +51,7 @@ routes.post('/signup', checkCookie, async (req, res) => {
 
   const payload = createCookerToken(cooker);
   attachCookiesToResponse(res, payload);
-  return res.status(StatusCodes.OK).send(cooker);
+  return res.status(StatusCodes.OK).json({ cooker });
 });
 
 routes.post('/login', checkCookie, async (req, res) => {
@@ -71,7 +71,7 @@ routes.post('/login', checkCookie, async (req, res) => {
 
   const payload = createCookerToken(cooker);
   attachCookiesToResponse(res, payload);
-  res.status(StatusCodes.OK).send(cooker);
+  res.status(StatusCodes.OK).json({ cooker });
 });
 
 //logout route
@@ -81,7 +81,7 @@ routes.get('/logout', cookerAuth, (req, res) => {
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 14 * 1000,
   });
-  res.send('logged out');
+  res.status(StatusCodes.OK).json('logged out');
 });
 
 module.exports = routes;

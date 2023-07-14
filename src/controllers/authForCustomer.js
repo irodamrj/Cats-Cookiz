@@ -35,7 +35,7 @@ router.get(
     const payload = createUserToken(req.user);
     console.log(payload);
     attachCookiesToResponse(res, payload);
-    return res.send(req.user);
+    return res.status(StatusCodes.OK).json(req.user);
   }
 );
 
@@ -81,7 +81,7 @@ router.post('/signup', checkCookie, async (req, res) => {
   });
   const payload = createUserToken(customer);
   attachCookiesToResponse(res, payload);
-  return res.status(StatusCodes.OK).send(customer);
+  return res.status(StatusCodes.OK).json({ customer });
 });
 
 router.post('/login', checkCookie, async (req, res) => {
@@ -103,7 +103,7 @@ router.post('/login', checkCookie, async (req, res) => {
 
   const payload = createUserToken(customer);
   attachCookiesToResponse(res, payload);
-  res.send(customer);
+  res.status(StatusCodes.OK).json({ customer });
 });
 
 //logout route
@@ -113,7 +113,7 @@ router.get('/logout', customerAuth, (req, res) => {
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 14 * 1000,
   });
-  res.send('Customer logged out');
+  res.status(StatusCodes.OK).json('Customer logged out');
 });
 
 module.exports = router;

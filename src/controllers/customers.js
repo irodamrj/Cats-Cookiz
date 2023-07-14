@@ -11,7 +11,7 @@ routes.get('/', async (req, res) => {
   const customer = await CustomerModel.findOne({ email: req.auth.email })
     .populate('address')
     .populate('cart');
-  return res.status(StatusCodes.OK).json(customer);
+  return res.status(StatusCodes.OK).json({ customer });
 });
 
 routes.patch('/', async (req, res) => {
@@ -45,7 +45,7 @@ routes.patch('/', async (req, res) => {
 
   return res
     .status(StatusCodes.OK)
-    .send(updatedCustomer + ' is updated successfully');
+    .json(updatedCustomer + ' is updated successfully');
 });
 
 routes.delete('/', async (req, res) => {
@@ -71,7 +71,7 @@ routes.get('/cart', async (req, res) => {
     { email: req.auth.email },
     { _id: 0, cart: 1 }
   );
-  return res.status(StatusCodes.OK).json(customer);
+  return res.status(StatusCodes.OK).json({ customer });
 });
 
 routes.patch('/cart', async (req, res) => {
@@ -94,8 +94,6 @@ routes.post('/cart', async (req, res) => {
     { _id: cartItemsIds[0] },
     { cookerId: 1, _id: 0 }
   );
-
-  console.log(oldCooker);
 
   if (!req.body.itemId) {
     throw new CustomError.BadRequestError('Cart data incomplete');
@@ -134,7 +132,7 @@ routes.post('/cart', async (req, res) => {
 
   customer.cart.total += tempTotal;
   const updatedCustomer = await customer.save();
-  return res.status(StatusCodes.OK).json(updatedCustomer);
+  return res.status(StatusCodes.OK).json({ updatedCustomer });
 });
 
 module.exports = routes;

@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcryptjs');
 const { attachCookiesToResponse } = require('../utils/jwt');
 const { createAdminToken } = require('../utils/createToken');
 const checkCookie = require('../middleware/checkCookie');
@@ -18,13 +19,13 @@ router.post('/login', checkCookie, async (req, res) => {
   if (!admin) {
     throw new CustomError.UnauthenticatedError('Invalid Credentials');
   }
-  const isPasswordCorrect = await admin.comparePassword(password);
+  const isPasswordCorrect = password === admin.password;
   if (!isPasswordCorrect) {
     throw new CustomError.UnauthenticatedError('Invalid Credentials');
   }
   const payload = createAdminToken(admin);
   attachCookiesToResponse(res, payload);
-  res.status(StatusCodes.OK).send(admin);
+  res.status(StatusCodes.OK).json(admin.username);
 });
 
 //logout route
@@ -34,7 +35,7 @@ router.get('/logout', adminAuth, (req, res) => {
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 14 * 1000,
   });
-  res.send('Admin logged out');
+  res.status(StatusCodes.OK).json('Admin logged out');
 });
 
 module.exports = router;

@@ -18,7 +18,7 @@ routes.get('/all', async (req, res) => {
     .populate('dishes')
     .populate('deliveryAddress');
 
-  return res.status(StatusCodes.OK).json(orders);
+  return res.status(StatusCodes.OK).json({ orders });
 });
 
 routes.get('/:id', async (req, res) => {
@@ -38,12 +38,11 @@ routes.get('/:id', async (req, res) => {
   if (!order) {
     throw new CustomError.NotFoundError('Order not found');
   }
-  return res.status(StatusCodes.OK).json(order);
+  return res.status(StatusCodes.OK).json({ order });
 });
 
 routes.post('/', async (req, res) => {
   let { deliveryAddress } = req.body;
-  console.log('from body ' + deliveryAddress);
   const customer = await CustomerModel.findOne({
     email: req.auth.email,
   });
@@ -56,6 +55,7 @@ routes.post('/', async (req, res) => {
 
   const dish = await Dish.findOne({ _id: cartItemIds[0] }, { cookerId: 1 });
   let isAddressNew = false;
+
   if (!deliveryAddress) {
     if (!customer.address) {
       throw new CustomError.BadRequestError(
@@ -98,20 +98,25 @@ routes.post('/', async (req, res) => {
     { new: true }
   );
 
-  return res.status(StatusCodes.CREATED).send(order);
-
+  return res.status(StatusCodes.CREATED).json({ order });
 });
 
-routes.delete('/:id', async (req, res) => {
+//not delete order, just cancel
+routes.patch('/:id', async (req, res) => {
   const orderId = req.params.id;
   const customerId = await CustomerModel.findOne(
     { email: req.auth.email },
     { _id: 1 }
   );
-  const order = await OrderModel.findOneAndDelete({
-    _id: orderId,
-    customerId: customerId,
-  });
+  const order = await OrderModel.findOneAndUpdate(
+    {
+      _id: orderId,
+      customerId: customerId,
+      status: 'Completed',
+    },
+    { status: 'Cancelled' },
+    { new: true }
+  );
 
   if (!order) {
     throw new CustomError.NotFoundError('Order not found');
@@ -120,20 +125,19 @@ routes.delete('/:id', async (req, res) => {
   if (order.isAddressNew) {
     await Address.findOneAndDelete({ _id: order.deliveryAddress });
   }
-  return res.status(StatusCodes.OK).json('Order deleted successfully');
+  return res.status(StatusCodes.OK).json('Order cancelled successfully');
 });
 
+//do not add order to cooker schema
 routes.post('/:id/review', async (req, res) => {
   const { rating, commentText } = req.body;
   const orderId = req.params.id;
-  console.log(orderId);
   const customerId = await CustomerModel.findOne(
     {
       email: req.auth.email,
     },
     { _id: 1 }
   );
-  console.log(customerId._id);
   const order = await OrderModel.findOne(
     {
       _id: orderId,
@@ -141,7 +145,6 @@ routes.post('/:id/review', async (req, res) => {
     },
     { cookerId: 1, _id: 0 }
   );
-  console.log(order);
 
   if (!order) {
     throw new CustomError.NotFoundError(`Order with id ${orderId} not found`);
@@ -162,9 +165,6 @@ routes.post('/:id/review', async (req, res) => {
     commentText: commentText,
   });
 
-  cooker.comments.push(comment);
-  await cooker.save();
-  // const createdComment = await comment.save();
-  return res.status(StatusCodes.OK).json(comment);
+  return res.status(StatusCodes.OK).json({ comment });
 });
 module.exports = routes;
