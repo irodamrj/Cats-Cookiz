@@ -1,7 +1,5 @@
-const express = require('express');
 const CustomerModel = require('../models/customer');
 const CustomError = require('../errors');
-const routes = express.Router();
 const OrderModel = require('../models/order');
 const CommentModel = require('../models/comment');
 const CookerModel = require('../models/cooker');
@@ -9,7 +7,7 @@ const Dish = require('../models/dish');
 const Address = require('../models/address');
 const { StatusCodes } = require('http-status-codes');
 
-routes.get('/all', async (req, res) => {
+const getAllOrders = async (req, res) => {
   const customerId = await CustomerModel.findOne(
     { email: req.auth.email },
     { _id: 1 }
@@ -19,9 +17,9 @@ routes.get('/all', async (req, res) => {
     .populate('deliveryAddress');
 
   return res.status(StatusCodes.OK).json({ orders });
-});
+};
 
-routes.get('/:id', async (req, res) => {
+const getAnOrder = async (req, res) => {
   const orderId = req.params.id;
   const customerId = await CustomerModel.findOne(
     { email: req.auth.email },
@@ -39,9 +37,9 @@ routes.get('/:id', async (req, res) => {
     throw new CustomError.NotFoundError('Order not found');
   }
   return res.status(StatusCodes.OK).json({ order });
-});
+};
 
-routes.post('/', async (req, res) => {
+const createOrder = async (req, res) => {
   let { deliveryAddress } = req.body;
   const customer = await CustomerModel.findOne({
     email: req.auth.email,
@@ -99,10 +97,10 @@ routes.post('/', async (req, res) => {
   );
 
   return res.status(StatusCodes.CREATED).json({ order });
-});
+};
 
 //not delete order, just cancel
-routes.patch('/:id', async (req, res) => {
+const cancelOrder = async (req, res) => {
   const orderId = req.params.id;
   const customerId = await CustomerModel.findOne(
     { email: req.auth.email },
@@ -126,10 +124,10 @@ routes.patch('/:id', async (req, res) => {
     await Address.findOneAndDelete({ _id: order.deliveryAddress });
   }
   return res.status(StatusCodes.OK).json('Order cancelled successfully');
-});
+};
 
 //do not add order to cooker schema
-routes.post('/:id/review', async (req, res) => {
+const createComment = async (req, res) => {
   const { rating, commentText } = req.body;
   const orderId = req.params.id;
   const customerId = await CustomerModel.findOne(
@@ -166,5 +164,12 @@ routes.post('/:id/review', async (req, res) => {
   });
 
   return res.status(StatusCodes.OK).json({ comment });
-});
-module.exports = routes;
+};
+
+module.exports = {
+  getAllOrders,
+  getAnOrder,
+  createOrder,
+  cancelOrder,
+  createComment,
+};

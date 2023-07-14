@@ -1,63 +1,54 @@
-const express = require('express');
-
 const passport = require('passport');
 const { attachCookiesToResponse } = require('../utils/jwt');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
 const Customer = require('../models/customer');
 const bcrypt = require('bcryptjs');
-// const Cart = require('../models/cart');
-
 const { createUserToken } = require('../utils/createToken');
-const checkCookie = require('../middleware/checkCookie');
-const { customerAuth } = require('../middleware/authorization');
-//Customer authentication
-const router = express.Router();
 
 //Google authentication page route
-router.get(
-  '/google',
+
+const google = function () {
   passport.authenticate('google', {
     scope: ['profile', 'email', 'openid'],
-  })
-);
+  });
+};
 
 //google callback route
-router.get(
-  '/google/callback',
+const googleCallback = function (_, _, next) {
   passport.authenticate('google', {
     session: false,
     failureRedirect: '/',
-  }),
+  });
+  next();
+};
 
-  async (req, res) => {
-    // console.log('no failure');
-    const payload = createUserToken(req.user);
-    console.log(payload);
-    attachCookiesToResponse(res, payload);
-    return res.status(StatusCodes.OK).json(req.user);
-  }
-);
-
+const googleCallbackFunc = async (req, res) => {
+  // console.log('no failure');
+  const payload = createUserToken(req.user);
+  console.log(payload);
+  attachCookiesToResponse(res, payload);
+  return res.status(StatusCodes.OK).json(req.user);
+};
 //facebook authentication page route
-router.get(
-  '/facebook',
-  passport.authenticate('facebook', { scope: ['public_profile', 'email'] })
-);
+
+const facebook = function () {
+  passport.authenticate('facebook', { scope: ['public_profile', 'email'] });
+};
 
 //facebook callback route
-router.get(
-  '/facebook/callback',
-  passport.authenticate('facebook', { failureRedirect: '/login' }),
-  function (req, res) {
-    // Successful authentication, redirect home.
-    const payload = createUserToken(req.user);
-    attachCookiesToResponse(res, payload);
-  }
-);
 
+const facebookCallback = function (_, _, next) {
+  passport.authenticate('facebook', { failureRedirect: '/login' });
+  next();
+};
+const facebookCb = function (req, res) {
+  // Successful authentication, redirect home.
+  const payload = createUserToken(req.user);
+  attachCookiesToResponse(res, payload);
+};
 //local signup
-router.post('/signup', checkCookie, async (req, res) => {
+const signup = async (req, res) => {
   console.log('signup called');
   const { firstName, lastName, email, password } = req.body;
   const emailAlreadyExists = await Customer.findOne({ email });
@@ -82,9 +73,9 @@ router.post('/signup', checkCookie, async (req, res) => {
   const payload = createUserToken(customer);
   attachCookiesToResponse(res, payload);
   return res.status(StatusCodes.OK).json({ customer });
-});
+};
 
-router.post('/login', checkCookie, async (req, res) => {
+const login = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -104,16 +95,26 @@ router.post('/login', checkCookie, async (req, res) => {
   const payload = createUserToken(customer);
   attachCookiesToResponse(res, payload);
   res.status(StatusCodes.OK).json({ customer });
-});
+};
 
 //logout route
-router.get('/logout', customerAuth, (req, res) => {
+const logout = (req, res) => {
   res.clearCookie('token', {
     signed: true,
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 14 * 1000,
   });
   res.status(StatusCodes.OK).json('Customer logged out');
-});
+};
 
-module.exports = router;
+module.exports = {
+  google,
+  googleCallback,
+  googleCallbackFunc,
+  facebook,
+  facebookCallback,
+  facebookCb,
+  signup,
+  login,
+  logout,
+};

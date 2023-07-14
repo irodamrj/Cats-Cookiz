@@ -1,20 +1,17 @@
-const express = require('express');
-
 const CustomerModel = require('../models/customer');
 const Dish = require('../models/dish');
 const CustomError = require('../errors');
-const routes = express.Router();
 const AddressModel = require('../models/address');
 const { StatusCodes } = require('http-status-codes');
 
-routes.get('/', async (req, res) => {
+const getProfile = async (req, res) => {
   const customer = await CustomerModel.findOne({ email: req.auth.email })
     .populate('address')
     .populate('cart');
   return res.status(StatusCodes.OK).json({ customer });
-});
+};
 
-routes.patch('/', async (req, res) => {
+const updateProfile = async (req, res) => {
   const { address, phoneNumber, profilePicture, firstName, lastName } =
     req.body;
 
@@ -46,9 +43,9 @@ routes.patch('/', async (req, res) => {
   return res
     .status(StatusCodes.OK)
     .json(updatedCustomer + ' is updated successfully');
-});
+};
 
-routes.delete('/', async (req, res) => {
+const deleteProfile = async (req, res) => {
   const customer = await CustomerModel.findOne({ email: req.auth.email });
 
   if (customer.address) {
@@ -64,17 +61,17 @@ routes.delete('/', async (req, res) => {
   });
 
   return res.status(StatusCodes.OK).json('user is deleted and logout');
-});
+};
 
-routes.get('/cart', async (req, res) => {
+const getCart = async (req, res) => {
   const customer = await CustomerModel.findOne(
     { email: req.auth.email },
     { _id: 0, cart: 1 }
   );
   return res.status(StatusCodes.OK).json({ customer });
-});
+};
 
-routes.patch('/cart', async (req, res) => {
+const resetCart = async (req, res) => {
   const customer = await CustomerModel.findOneAndUpdate(
     { email: req.auth.email },
     {
@@ -84,9 +81,9 @@ routes.patch('/cart', async (req, res) => {
     { new: true }
   );
   res.status(StatusCodes.OK).json(customer.cart);
-});
+};
 
-routes.post('/cart', async (req, res) => {
+const createCart = async (req, res) => {
   //to add item to cart which is sepet
   const customer = await CustomerModel.findOne({ email: req.auth.email });
   const cartItemsIds = customer.cart.itemId.map((e) => e);
@@ -133,6 +130,13 @@ routes.post('/cart', async (req, res) => {
   customer.cart.total += tempTotal;
   const updatedCustomer = await customer.save();
   return res.status(StatusCodes.OK).json({ updatedCustomer });
-});
+};
 
-module.exports = routes;
+module.exports = {
+  getProfile,
+  updateProfile,
+  deleteProfile,
+  getCart,
+  resetCart,
+  createCart,
+};

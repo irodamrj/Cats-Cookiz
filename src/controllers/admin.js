@@ -1,5 +1,3 @@
-const express = require('express');
-const router = express.Router();
 const CustomerModel = require('../models/customer');
 const CookModel = require('../models/cooker');
 const OrderModel = require('../models/order');
@@ -10,7 +8,7 @@ const CustomError = require('../errors');
 const { StatusCodes } = require('http-status-codes');
 
 //do not delete orders
-router.delete('/cooker/:id', async (req, res) => {
+const deleteCooker = async (req, res) => {
   const { id } = req.params;
   const cook = await CookModel.findByIdAndDelete(id).populate('address');
   if (!cook) {
@@ -22,10 +20,10 @@ router.delete('/cooker/:id', async (req, res) => {
   }
   await DishModel.deleteMany({ cookerId: id });
   return res.status(StatusCodes.OK).json('Cooker deleted successfully');
-});
+};
 
 //do not delete orders
-router.delete('/customer/:id', async (req, res) => {
+const deleteCustomer = async (req, res) => {
   const { id } = req.params;
   console.log(id);
   const customer = await CustomerModel.findOneAndUpdate(
@@ -41,9 +39,9 @@ router.delete('/customer/:id', async (req, res) => {
 
   await CustomerModel.findByIdAndDelete(id);
   return res.status(StatusCodes.OK).json('Customer deleted successfully');
-});
+};
 
-router.patch('/order/:id', async (req, res) => {
+const updateOrder = async (req, res) => {
   const orderId = req.params.id;
 
   const updatedOrder = await OrderModel.findByIdAndUpdate(
@@ -57,6 +55,6 @@ router.patch('/order/:id', async (req, res) => {
     .json(
       `status of the order with Id ${orderId} is updated to ${orderStatus}`
     );
-});
+};
 
-module.exports = router;
+module.exports = { deleteCooker, deleteCustomer, updateOrder };

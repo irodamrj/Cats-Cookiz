@@ -1,23 +1,18 @@
-const express = require('express');
-
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
-const { isCookerApproved } = require('../middleware/authorization');
 const Cooker = require('../models/cooker');
 const Order = require('../models/order');
 const Dish = require('../models/dish');
 const Address = require('../models/address');
 
-const router = express.Router();
-
-router.get('/', async (req, res) => {
+const getProfile = async (req, res) => {
   const cooker = await Cooker.findOne({ email: req.auth.email }).populate(
     'address'
   );
   return res.status(StatusCodes.OK).json({ cooker });
-});
+};
 
-router.patch('/', async (req, res) => {
+const updateProfile = async (req, res) => {
   const { phonenumber, aboutCooker, openingHour, closingHour, address } =
     req.body;
 
@@ -45,9 +40,9 @@ router.patch('/', async (req, res) => {
   return res
     .status(StatusCodes.OK)
     .json(updatedCooker + ' is updated successfully');
-});
+};
 
-router.get('/orders', async (req, res) => {
+const getAllOrders = async (req, res) => {
   const cooker = await Cooker.findOne({ email: req.auth.email }, { _id: 1 });
   const orders = await Order.find({ cookerId: cooker._id }).populate([
     { path: 'dishes', model: 'Dish' },
@@ -55,9 +50,9 @@ router.get('/orders', async (req, res) => {
   ]);
 
   return res.status(StatusCodes.OK).json({ orders });
-});
+};
 
-router.get('/orders/:id', async (req, res) => {
+const getAnOrder = async (req, res) => {
   const orderId = req.params.id;
 
   const cooker = await Cooker.findOne({ email: req.auth.email }, { _id: 1 });
@@ -73,10 +68,10 @@ router.get('/orders/:id', async (req, res) => {
     throw new CustomError.NotFoundError('Order not found');
   }
   return res.status(StatusCodes.OK).json({ order });
-});
+};
 
 //just can mark a order as delivered
-router.patch('/orders/:id', async (req, res) => {
+const updateAnOrdersStatus = async (req, res) => {
   const orderId = req.params.id;
   const orderStatus = req.body.orderStatus;
 
@@ -104,9 +99,9 @@ router.patch('/orders/:id', async (req, res) => {
     .json(
       `status of the order with Id ${orderId} is updated to ${orderStatus}`
     );
-});
+};
 
-router.post('/dishes', isCookerApproved, async (req, res) => {
+const createDish = async (req, res) => {
   const cooker = await Cooker.findOne({ email: req.auth.email }, { _id: 1 });
   const { name, description, price } = req.body;
   let image = req.body.image || '';
@@ -118,9 +113,9 @@ router.post('/dishes', isCookerApproved, async (req, res) => {
     cookerId: cooker._id,
   });
   return res.status(StatusCodes.OK).json({ newDish });
-});
+};
 
-router.delete('/dishes/:id', async (req, res) => {
+const deleteDish = async (req, res) => {
   const dishId = req.params.id;
   const cooker = await Cooker.findOne({ email: req.auth.email }, { _id: 1 });
   const dish = await Dish.findOneAndDelete({ cookerId: cooker, _id: dishId });
@@ -130,16 +125,16 @@ router.delete('/dishes/:id', async (req, res) => {
   }
 
   return res.status(StatusCodes.OK).json(dish + ' is deleted successfully');
-});
+};
 
-router.get('/dishes', async (req, res) => {
+const getAllDishes = async (req, res) => {
   const cooker = await Cooker.findOne({ email: req.auth.email }, { _id: 1 });
 
   const dishes = await Dish.find({ cookerId: cooker._id });
   return res.status(StatusCodes.OK).json({ dishes });
-});
+};
 
-router.patch('/dishes/:id', async (req, res) => {
+const updateDish = async (req, res) => {
   const dishId = req.params.id;
   const cooker = await Cooker.findOne({ email: req.auth.email }, { _id: 1 });
   const { name, description, price, image } = req.body;
@@ -152,10 +147,13 @@ router.patch('/dishes/:id', async (req, res) => {
     throw new CustomError.NotFoundError('Dish not found');
   }
   return res.status(StatusCodes.OK).json(dish + ' is updated successfully');
-});
+};
 
-router.post('/paymentType', async (req, res) => {
+const setPaymentType = async (req, res) => {
   const cooker = await Cooker.findOne({ email: req.auth.email });
+  if (!req.body.paymentType) {
+    throw new CustomError.BadRequestError('Payment type cannot be empty.');
+  }
   cooker.addPaymentMethod(req.body.paymentType);
   cooker.save();
 
@@ -164,6 +162,17 @@ router.post('/paymentType', async (req, res) => {
     .json(
       `payment type ${req.body.paymentType} added. Current payment options are: ${cooker.paymentType}`
     );
-});
+};
 
-module.exports = router;
+module.exports = {
+  getProfile,
+  updateProfile,
+  getAllOrders,
+  getAnOrder,
+  updateAnOrdersStatus,
+  createDish,
+  deleteDish,
+  getAllDishes,
+  updateDish,
+  setPaymentType,
+};
