@@ -14,17 +14,7 @@ const google = function () {
   });
 };
 
-//google callback route
-const googleCallback = function (_, _, next) {
-  passport.authenticate('google', {
-    session: false,
-    failureRedirect: '/',
-  });
-  next();
-};
-
 const googleCallbackFunc = async (req, res) => {
-  // console.log('no failure');
   const payload = createUserToken(req.user);
   console.log(payload);
   attachCookiesToResponse(res, payload);
@@ -36,12 +26,6 @@ const facebook = function () {
   passport.authenticate('facebook', { scope: ['public_profile', 'email'] });
 };
 
-//facebook callback route
-
-const facebookCallback = function (_, _, next) {
-  passport.authenticate('facebook', { failureRedirect: '/login' });
-  next();
-};
 const facebookCb = function (req, res) {
   // Successful authentication, redirect home.
   const payload = createUserToken(req.user);
@@ -109,10 +93,8 @@ const logout = (req, res) => {
 
 module.exports = {
   google,
-  googleCallback,
   googleCallbackFunc,
   facebook,
-  facebookCallback,
   facebookCb,
   signup,
   login,
