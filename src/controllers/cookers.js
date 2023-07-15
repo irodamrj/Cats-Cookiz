@@ -9,6 +9,7 @@ const getProfile = async (req, res) => {
   const cooker = await Cooker.findOne({ email: req.auth.email }).populate(
     'address'
   );
+
   return res.status(StatusCodes.OK).json({ cooker });
 };
 

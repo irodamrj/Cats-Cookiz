@@ -163,6 +163,22 @@ const createComment = async (req, res) => {
     commentText: commentText,
   });
 
+  const comments = await Comment.find({ cookerId: cooker._id });
+  // const countOfComments = await Comment.count({ cookerId: cooker._id });
+
+  let averageRating = 0;
+  let sumOfRatings = 0;
+  console.log(comments.length);
+  if (comments.length > 0) {
+    for (let i = 0; i < comments.length; i++) {
+      sumOfRatings += comments[i].rating;
+    }
+
+    averageRating = (sumOfRatings / comments.length).toFixed(1);
+    cooker.averageRating = averageRating;
+    await cooker.save();
+  }
+
   return res.status(StatusCodes.OK).json({ comment });
 };
 
