@@ -14,7 +14,6 @@ const cartSchema = new Schema({
     type: Number,
     required: true,
   },
-
 });
 
 const customerSchema = new Schema({
@@ -51,10 +50,10 @@ const customerSchema = new Schema({
 
   cart: {
     type: cartSchema,
-    default:{
-      itemId:[],
-      total: 0
-    }
+    default: {
+      itemId: [],
+      total: 0,
+    },
     // ref: `Cart`,
   },
 
@@ -62,9 +61,7 @@ const customerSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: `Address`,
   },
-
 });
-
 
 customerSchema.pre('save', async function () {
   const salt = await bcrypt.genSalt(10);

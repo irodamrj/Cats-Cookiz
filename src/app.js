@@ -10,17 +10,12 @@ const { expressjwt: jwt } = require('express-jwt');
 const passport = require('passport');
 const morgan = require('morgan');
 const passportSetup = require('./config/passport');
-const swaggerDocs = require("./SwaggerDocs/swaggerdoc")
+const swaggerDocs = require('./SwaggerDocs/swaggerdoc');
 const swaggerUi = require('swagger-ui-express');
 //database
 const db = require('./db');
 
-//route middleware
-const authCustomerRoute = require('./controllers/authForCustomer.js');
-const authCookerRoute = require('./controllers/authForCooker');
-const authForAdmin = require('./controllers/authForAdmin.js');
-
-//Swagger middleware 
+//Swagger middleware
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 //routes
 const authCustomerRoute = require('./controllers/authForCustomer');
@@ -82,7 +77,7 @@ app.use('/home', public);
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 
-const port = 5001;
+const port = 3000;
 console.log(process.env.PORT);
 
 const PROXY_PORT = process.env.PROXY_PORT ?? port;

@@ -18,8 +18,14 @@ router.get('/', async (req, res) => {
 });
 
 router.patch('/', async (req, res) => {
-  const { phonenumber, aboutCooker, openingHour, closingHour, address } =
-    req.body;
+  const {
+    phonenumber,
+    aboutCooker,
+    openingHour,
+    closingHour,
+    address,
+    paymentType,
+  } = req.body;
 
   const cookerAddressId = await Cooker.findOne(
     { email: req.auth.email },
@@ -39,7 +45,14 @@ router.patch('/', async (req, res) => {
 
   const updatedCooker = await Cooker.findOneAndUpdate(
     { email: req.auth.email },
-    { phonenumber, aboutCooker, openingHour, closingHour, newAddress },
+    {
+      phonenumber,
+      aboutCooker,
+      openingHour,
+      closingHour,
+      newAddress,
+      paymentType,
+    },
     { new: true }
   ).populate('address');
 

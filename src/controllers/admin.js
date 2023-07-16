@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const CustomerModel = require("../models/customer");
+const CustomerModel = require('../models/customer');
 const CookModel = require('../models/cooker');
 const OrderModel = require('../models/order');
 const CommentModel = require('../models/comment');
@@ -32,7 +32,9 @@ router.delete('/cook/:id', async (req, res) => {
   // Delete the cook's profile
   await CookModel.findByIdAndDelete(id);
 
-  res.json({ message: 'Cook and associated address/comments deleted successfully' });
+  res.json({
+    message: 'Cook and associated address/comments deleted successfully',
+  });
 });
 // DELETE /admin/user/:id
 router.delete('/user/:id', async (req, res) => {
