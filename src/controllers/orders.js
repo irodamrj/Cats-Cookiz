@@ -1,7 +1,5 @@
-const express = require('express');
 const CustomerModel = require('../models/customer');
 const CustomError = require('../errors');
-const routes = express.Router();
 const OrderModel = require('../models/order');
 const CommentModel = require('../models/comment');
 const CookerModel = require('../models/cooker');
@@ -9,7 +7,7 @@ const Dish = require('../models/dish');
 const Address = require('../models/address');
 const { StatusCodes } = require('http-status-codes');
 
-routes.get('/all', async (req, res) => {
+const getAllOrders = async (req, res) => {
   const customerId = await CustomerModel.findOne(
     { email: req.auth.email },
     { _id: 1 }
@@ -18,10 +16,10 @@ routes.get('/all', async (req, res) => {
     .populate('dishes')
     .populate('deliveryAddress');
 
-  return res.status(StatusCodes.OK).json(orders);
-});
+  return res.status(StatusCodes.OK).json({ orders });
+};
 
-routes.get('/:id', async (req, res) => {
+const getAnOrder = async (req, res) => {
   const orderId = req.params.id;
   const customerId = await CustomerModel.findOne(
     { email: req.auth.email },
@@ -38,12 +36,11 @@ routes.get('/:id', async (req, res) => {
   if (!order) {
     throw new CustomError.NotFoundError('Order not found');
   }
-  return res.status(StatusCodes.OK).json(order);
-});
+  return res.status(StatusCodes.OK).json({ order });
+};
 
-routes.post('/', async (req, res) => {
+const createOrder = async (req, res) => {
   let { deliveryAddress } = req.body;
-  console.log('from body ' + deliveryAddress);
   const customer = await CustomerModel.findOne({
     email: req.auth.email,
   });
@@ -56,6 +53,7 @@ routes.post('/', async (req, res) => {
 
   const dish = await Dish.findOne({ _id: cartItemIds[0] }, { cookerId: 1 });
   let isAddressNew = false;
+
   if (!deliveryAddress) {
     if (!customer.address) {
       throw new CustomError.BadRequestError(
@@ -98,20 +96,25 @@ routes.post('/', async (req, res) => {
     { new: true }
   );
 
-  return res.status(StatusCodes.CREATED).send(order);
+  return res.status(StatusCodes.CREATED).json({ order });
+};
 
-});
-
-routes.delete('/:id', async (req, res) => {
+//not delete order, just cancel
+const cancelOrder = async (req, res) => {
   const orderId = req.params.id;
   const customerId = await CustomerModel.findOne(
     { email: req.auth.email },
     { _id: 1 }
   );
-  const order = await OrderModel.findOneAndDelete({
-    _id: orderId,
-    customerId: customerId,
-  });
+  const order = await OrderModel.findOneAndUpdate(
+    {
+      _id: orderId,
+      customerId: customerId,
+      status: 'Completed',
+    },
+    { status: 'Cancelled' },
+    { new: true }
+  );
 
   if (!order) {
     throw new CustomError.NotFoundError('Order not found');
@@ -120,20 +123,19 @@ routes.delete('/:id', async (req, res) => {
   if (order.isAddressNew) {
     await Address.findOneAndDelete({ _id: order.deliveryAddress });
   }
-  return res.status(StatusCodes.OK).json('Order deleted successfully');
-});
+  return res.status(StatusCodes.OK).json('Order cancelled successfully');
+};
 
-routes.post('/:id/review', async (req, res) => {
+//do not add order to cooker schema
+const createComment = async (req, res) => {
   const { rating, commentText } = req.body;
   const orderId = req.params.id;
-  console.log(orderId);
   const customerId = await CustomerModel.findOne(
     {
       email: req.auth.email,
     },
     { _id: 1 }
   );
-  console.log(customerId._id);
   const order = await OrderModel.findOne(
     {
       _id: orderId,
@@ -141,7 +143,6 @@ routes.post('/:id/review', async (req, res) => {
     },
     { cookerId: 1, _id: 0 }
   );
-  console.log(order);
 
   if (!order) {
     throw new CustomError.NotFoundError(`Order with id ${orderId} not found`);
@@ -162,9 +163,29 @@ routes.post('/:id/review', async (req, res) => {
     commentText: commentText,
   });
 
-  cooker.comments.push(comment);
-  await cooker.save();
-  // const createdComment = await comment.save();
-  return res.status(StatusCodes.OK).json(comment);
-});
-module.exports = routes;
+  const comments = await Comment.find({ cookerId: cooker._id });
+  // const countOfComments = await Comment.count({ cookerId: cooker._id });
+
+  let averageRating = 0;
+  let sumOfRatings = 0;
+  console.log(comments.length);
+  if (comments.length > 0) {
+    for (let i = 0; i < comments.length; i++) {
+      sumOfRatings += comments[i].rating;
+    }
+
+    averageRating = (sumOfRatings / comments.length).toFixed(1);
+    cooker.averageRating = averageRating;
+    await cooker.save();
+  }
+
+  return res.status(StatusCodes.OK).json({ comment });
+};
+
+module.exports = {
+  getAllOrders,
+  getAnOrder,
+  createOrder,
+  cancelOrder,
+  createComment,
+};
