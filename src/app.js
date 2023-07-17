@@ -16,10 +16,24 @@ const swaggerUi = require('swagger-ui-express');
 //database
 const db = require('./db');
 
+
 //route middleware
 
-//Swagger middleware 
+// Auth routes
+const authCustomerRoute = require('./routes/authForCustomer.js');
+const authCookerRoute = require('./routes/authForCooker');
+const authForAdmin = require('./routes/authForAdmin');
+//routes
+const customerRoute = require('./routes/customers');
+const orderRoute = require('./routes/orders');
+const adminRoute = require('./routes/admin');
+const cookerRoute = require('./routes/cookers');
+const public = require('./routes/public');
+
+
+//Swagger middleware
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
 // Auth routes
 const authCustomerRoute = require('./routes/authForCustomer.js');
 const authCookerRoute = require('./routes/authForCooker');
@@ -33,6 +47,7 @@ const public = require('./routes/public');
 
 //Swagger middleware
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
 
 //middlewares
 const errorHandlerMiddleware = require('./middleware/error-handler');
