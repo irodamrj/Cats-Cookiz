@@ -6,12 +6,7 @@
   "author": "Ammar-64",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon src/app.js",
-    "test": "yarn validate && jest --passWithNoTests",
-    "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|json)\"",
-    "validate": "yarn format && yarn lint",
-    "validate-staged": "lint-staged",
-    "postinstall": "husky install && husky add .husky/pre-commit \"yarn validate-staged\" && husky add .husky/pre-push \"yarn test\""
+    "start": "nodemon src/app.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -33,9 +28,7 @@
     "swagger": "^0.7.5",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
-    "yaml": "^2.3.1",
-    "yamljs": "^0.3.0",
-    "yarn-upgrade-all": "^0.6.1"
+    "yamljs": "^0.3.0"
   },
   "devDependencies": {
     "cookie-signature": "^1.1.0",

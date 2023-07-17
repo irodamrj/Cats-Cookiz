@@ -1,77 +1,56 @@
-const express = require('express');
-
 const CustomerModel = require('../models/customer');
+const Dish = require('../models/dish');
 const CustomError = require('../errors');
-const routes = express.Router();
 const AddressModel = require('../models/address');
+const { StatusCodes } = require('http-status-codes');
 
-routes.get('/', async (req, res) => {
+const getProfile = async (req, res) => {
   const customer = await CustomerModel.findOne({ email: req.auth.email })
     .populate('address')
     .populate('cart');
+  return res.status(StatusCodes.OK).json({ customer });
+};
 
-  res.json(customer);
+const updateProfile = async (req, res) => {
+  const { address, phoneNumber, profilePicture, firstName, lastName } =
+    req.body;
 
-  throw new CustomError.InternalServerError('Internal server error');
-});
+  const customerAddressId = await CustomerModel.findOne(
+    { email: req.auth.email },
+    { address: 1, _id: 0 }
+  );
 
-routes.patch('/', async (req, res) => {
-  console.log(req.body.address);
-  if (!req.body.address) {
-    const customer = await CustomerModel.findOneAndUpdate(
-      { email: req.auth.email },
-      req.body,
-      { new: true }
-    ).populate('address');
-    const updatedCustomer = await customer.save();
-    res.json(updatedCustomer);
-  } else if (req.body.address.id) {
-    const { address, ...customerData } = req.body;
-    const customer = await CustomerModel.findOneAndUpdate(
-      { email: req.auth.email },
-      customerData,
-      { new: true }
-    ).populate('address');
-    const addressUpdated = await AddressModel.findByIdAndUpdate(
-      req.body.address.id,
-      req.body.address
-    );
-    console.log(customer);
-    console.log(addressUpdated);
-
-    await addressUpdated.save();
-    await customer.save();
-    res.json(customer);
-  } else if (req.body.address && !req.body.address.id) {
-    const customer = await CustomerModel.findOne({
-      email: req.auth.email,
-    }).populate('address');
-
-    const address = new AddressModel({
-      street: req.body.address.street,
-      city: req.body.address.city,
-      country: req.body.address.country,
-      buildingNumber: req.body.address.buildingNumber,
-      flatNumber: req.body.address.flatNumber,
-      floor: req.body.address.floor,
-      zipcode: req.body.address.zipcode,
-      state: req.body.address.state,
-      buildingName: req.body.address.buildingName,
-    });
-    customer.address.push(address._id);
-    await address.save();
-    await customer.save();
-    res.json(customer);
+  let newAddress;
+  if (!customerAddressId.address && address) {
+    newAddress = await AddressModel.create(address);
   }
-  throw new CustomError.InternalServerError('Internal server error');
-});
 
-routes.delete('/', async (req, res) => {
+  if (customerAddressId && address) {
+    await AddressModel.findOneAndUpdate(
+      {
+        _id: customerAddressId.address,
+      },
+      address
+    );
+  }
+
+  const updatedCustomer = await CustomerModel.findOneAndUpdate(
+    { email: req.auth.email },
+    { phoneNumber, profilePicture, address: newAddress, firstName, lastName },
+    { new: true }
+  ).populate('address');
+
+  return res
+    .status(StatusCodes.OK)
+    .json(updatedCustomer + ' is updated successfully');
+};
+
+const deleteProfile = async (req, res) => {
   const customer = await CustomerModel.findOne({ email: req.auth.email });
 
   if (customer.address) {
     const addressIds = customer.address;
-    await AddressModel.deleteMany({ _id: { $in: addressIds } });
+    await AddressModel.findByIdAndDelete({ _id: addressIds });
   }
   await customer.deleteOne();
 
@@ -81,50 +60,83 @@ routes.delete('/', async (req, res) => {
     maxAge: 24 * 60 * 60 * 14 * 1000,
   });
 
-  res.json('user is deleted and logout');
-  throw new CustomError.InternalServerError('Internal server error');
-});
+  return res.status(StatusCodes.OK).json('user is deleted and logout');
+};
 
-routes.get('/cart', async (req, res) => {
-  const customer = await CustomerModel.findOne({ email: req.auth.email });
-  res.json(customer.cart);
+const getCart = async (req, res) => {
+  const customer = await CustomerModel.findOne(
+    { email: req.auth.email },
+    { _id: 0, cart: 1 }
+  );
+  return res.status(StatusCodes.OK).json({ customer });
+};
 
-  throw new CustomError.InternalServerError('Internal server error');
-});
-
-routes.delete('/cart', async (req, res) => {
+const resetCart = async (req, res) => {
   const customer = await CustomerModel.findOneAndUpdate(
     { email: req.auth.email },
     {
-      itemId: [],
-      total: 0,
-    }
+      'cart.itemId': [],
+      'cart.total': 0,
+    },
+    { new: true }
   );
-  const updatedCustomer = await customer.save();
-  res.json(updatedCustomer.cart);
-  throw new CustomError.InternalServerError('Internal server error');
-});
-routes.post('/cart', async (req, res) => {
+  res.status(StatusCodes.OK).json(customer.cart);
+};
+
+const createCart = async (req, res) => {
   //to add item to cart which is sepet
   const customer = await CustomerModel.findOne({ email: req.auth.email });
-  let itemId = req.body.itemId;
-  let total = req.body.total;
-  if (!itemId || !total) {
+  const cartItemsIds = customer.cart.itemId.map((e) => e);
+  const oldCooker = await Dish.findOne(
+    { _id: cartItemsIds[0] },
+    { cookerId: 1, _id: 0 }
+  );
+
+  if (!req.body.itemId) {
     throw new CustomError.BadRequestError('Cart data incomplete');
   }
-  //  const itemFound= customer.cart.itemId.includes(itemId)
-  //  if(itemFound){
-  //   customer.cart.total += total;
-  //   customer.cart.amount+=1;
-  //  }else{
-  customer.cart.itemId.push(itemId);
-  customer.cart.total += total;
-  // customer.cart.amount=1;
-  //  }
-  //  console.log(itemFound)
-  const updatedCustomer = await customer.save();
-  res.json(updatedCustomer);
-  throw new CustomError.InternalServerError('Internal server error');
-});
+  let itemIds = req.body.itemId;
+  let tempTotal = 0;
+  let tempCookerId = [];
+  for (let i = 0; i < itemIds.length; i++) {
+    let singleItem = await Dish.findById({ _id: itemIds[i] });
+    if (!singleItem) {
+      throw new CustomError.NotFoundError(
+        `dish with id ${itemIds[i]} not found`
+      );
+    }
 
-module.exports = routes;
+    if (oldCooker && !singleItem.cookerId.equals(oldCooker.cookerId)) {
+      throw new CustomError.BadRequestError(
+        'Cannot add dishes from multiple reaturants. To add this item, delete your cart.'
+      );
+    }
+
+    if (
+      tempCookerId.length > 0 &&
+      !singleItem.cookerId.equals(tempCookerId[0])
+    ) {
+      throw new CustomError.BadRequestError(
+        'Cannot add dishes from multiple resaturants. To add this item, delete your cart.'
+      );
+    }
+
+    tempCookerId.push(singleItem.cookerId);
+
+    customer.cart.itemId.push(singleItem._id);
+    tempTotal += singleItem.price;
+  }
+
+  customer.cart.total += tempTotal;
+  const updatedCustomer = await customer.save();
+  return res.status(StatusCodes.OK).json({ updatedCustomer });
+};
+
+module.exports = {
+  getProfile,
+  updateProfile,
+  deleteProfile,
+  getCart,
+  resetCart,
+  createCart,
+};

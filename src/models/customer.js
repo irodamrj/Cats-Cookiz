@@ -54,30 +54,12 @@ const customerSchema = new Schema({
       itemId: [],
       total: 0,
     },
-    // ref: `Cart`,
   },
 
   address: {
     type: Schema.Types.ObjectId,
     ref: `Address`,
   },
-});
-
-customerSchema.pre('save', async function () {
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-});
-
-customerSchema.methods.comparePassword = async function (canditatePassword) {
-  const isMatch = await bcrypt.compare(canditatePassword, this.password);
-  return isMatch;
-};
-cartSchema.pre('save', function () {
-  let sum = 0;
-  this.itemId.forEach((element) => {
-    sum += element.price;
-  });
-  this.total = sum;
 });
 
 module.exports = mongoose.model('Customer', customerSchema);

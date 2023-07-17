@@ -1,60 +1,60 @@
-const express = require('express');
-const router = express.Router();
 const CustomerModel = require('../models/customer');
 const CookModel = require('../models/cooker');
 const OrderModel = require('../models/order');
 const CommentModel = require('../models/comment');
 const AddressModel = require('../models/address');
+const DishModel = require('../models/dish');
+const CustomError = require('../errors');
+const { StatusCodes } = require('http-status-codes');
 
-// // GET route for the root path '/'
-// app.get('/', (req, res) => {
-//   res.send('Welcome to the API');
-// });
-
-// DELETE /admin/cook/:id
-router.delete('/cook/:id', async (req, res) => {
+//do not delete orders
+const deleteCooker = async (req, res) => {
   const { id } = req.params;
-
-  // Find the cook and retrieve their address
-  const cook = await CookModel.findById(id).populate('address');
+  const cook = await CookModel.findByIdAndDelete(id).populate('address');
   if (!cook) {
     throw new Error('Cook not found');
   }
-
-  // Delete the comments associated with the cook
-  await CommentModel.deleteMany({ cook: id });
-
-  // Delete the cook's address if it exists
+  await CommentModel.deleteMany({ cookerId: id });
   if (cook.address) {
     await AddressModel.findByIdAndDelete(cook.address._id);
   }
+  await DishModel.deleteMany({ cookerId: id });
+  return res.status(StatusCodes.OK).json('Cooker deleted successfully');
+};
 
-  // Delete the cook's profile
-  await CookModel.findByIdAndDelete(id);
-
-  res.json({
-    message: 'Cook and associated address/comments deleted successfully',
-  });
-});
-// DELETE /admin/user/:id
-router.delete('/user/:id', async (req, res) => {
+//do not delete orders
+const deleteCustomer = async (req, res) => {
   const { id } = req.params;
-
-  // Find the customer and retrieve their address
-  const customer = await CustomerModel.findById(id).populate('address');
+  console.log(id);
+  const customer = await CustomerModel.findOneAndUpdate(
+    { _id: id },
+    { $unset: { cart: 1 } }
+  ).populate('address');
   if (!customer) {
-    throw new Error('Customer not found');
+    throw new CustomError.NotFoundError('Customer not found');
   }
-
-  // Delete the customer's address if it exists
   if (customer.address) {
     await AddressModel.findByIdAndDelete(customer.address._id);
   }
 
-  // Delete the customer's profile
   await CustomerModel.findByIdAndDelete(id);
+  return res.status(StatusCodes.OK).json('Customer deleted successfully');
+};
 
-  res.json({ message: 'Customer and associated address deleted successfully' });
-});
+const updateOrder = async (req, res) => {
+  const orderId = req.params.id;
 
-module.exports = router;
+  const updatedOrder = await OrderModel.findByIdAndUpdate(
+    { _id: orderId },
+    { status: 'Cancelled' },
+    { new: true }
+  );
+
+  return res
+    .status(StatusCodes.OK)
+    .json(
+      `status of the order with Id ${orderId} is updated to ${orderStatus}`
+    );
+};
+
+module.exports = { deleteCooker, deleteCustomer, updateOrder };

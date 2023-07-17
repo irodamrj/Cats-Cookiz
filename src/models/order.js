@@ -25,7 +25,7 @@ const orderSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ['Received', 'Cancelled', 'Delayed', 'Completed', 'Delivered'],
+      enum: ['Cancelled', 'Completed', 'Delivered'],
       default: 'Completed',
       required: true,
     },
@@ -35,7 +35,7 @@ const orderSchema = new Schema(
       required: true,
     },
     expectedDeliveryTime: {
-      type: Date,
+      type: String,
       required: true,
     },
     totalAmount: {
@@ -43,17 +43,12 @@ const orderSchema = new Schema(
       default: 0,
       // required: true,
     },
+    isAddressNew: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
-
-//for calculating the total amount
-orderSchema.pre('save', function () {
-  let sum = 0;
-  this.dishes.forEach((element) => {
-    sum += element.price;
-  });
-  this.totalAmount = sum;
-});
 
 module.exports = mongoose.model('Order', orderSchema);

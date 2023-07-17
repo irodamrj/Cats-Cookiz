@@ -250,7 +250,7 @@ module.exports = {
                           'Completed',
                           'Delivered',
                         ],
-                        default: 'Completed',
+                        default: 'Received',
                         required: true,
                       },
                       deliveryAddress: {
@@ -707,11 +707,12 @@ module.exports = {
               schema: {
                 properties: {
                   paymentType: {
-                    type: 'array',
+                    type: 'object',
                     items: {
                       type: 'string',
                     },
                     enum: ['card', 'cash'],
+                    default: 'card',
                   },
                 },
               },
