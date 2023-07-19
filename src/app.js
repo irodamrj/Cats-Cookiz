@@ -17,19 +17,6 @@ const swaggerUi = require('swagger-ui-express');
 const db = require('./db');
 
 
-//route middleware
-
-// Auth routes
-const authCustomerRoute = require('./routes/authForCustomer.js');
-const authCookerRoute = require('./routes/authForCooker');
-const authForAdmin = require('./routes/authForAdmin');
-//routes
-const customerRoute = require('./routes/customers');
-const orderRoute = require('./routes/orders');
-const adminRoute = require('./routes/admin');
-const cookerRoute = require('./routes/cookers');
-const public = require('./routes/public');
-
 
 //Swagger middleware
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
@@ -98,7 +85,7 @@ app.use('/home', public);
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 
-const port = 5000;
+const port = 3000;
 console.log(process.env.PORT);
 
 const PROXY_PORT = process.env.PROXY_PORT ?? port;

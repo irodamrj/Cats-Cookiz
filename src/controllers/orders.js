@@ -163,7 +163,7 @@ const createComment = async (req, res) => {
     commentText: commentText,
   });
 
-  const comments = await Comment.find({ cookerId: cooker._id });
+  const comments = await CommentModel.find({ cookerId: cooker._id });
   // const countOfComments = await Comment.count({ cookerId: cooker._id });
 
   let averageRating = 0;

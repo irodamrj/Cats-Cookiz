@@ -3,7 +3,7 @@ module.exports = {
     '/api/cooker': {
       get: {
         tags: ['Cooker'],
-        summary: 'Get Cooker',
+        summary: 'Get Cooker Profile',
         description: 'Retrieve Cooker Information',
         responses: {
           200: {
