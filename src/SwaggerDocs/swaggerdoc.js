@@ -1,6 +1,7 @@
 const swaggerJsdoc = require('swagger-jsdoc');
 const cookerDoc = require('./auth/cookerDoc');
 const CustomerDocs = require('./auth/customerDocs');
+const orderdocs = require('./Orders/orderdocs')
 
 const options = {
   definition: {
@@ -26,7 +27,8 @@ const options = {
   },
   apis: [
     './src/controllers/authForCooker.js',
-    './src/controllers/authForCustomer.js'
+    './src/controllers/authForCustomer.js',
+    './src/controllers/orders.js'
 ]
 };
 
