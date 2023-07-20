@@ -1,18 +1,12 @@
-const express = require('express');
-const routes = express.Router();
-
 const bcrypt = require('bcryptjs');
-
 const { attachCookiesToResponse } = require('../utils/jwt');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
 const Cooker = require('../models/cooker');
 const { createCookerToken } = require('../utils/createToken');
 const Adress = require('../models/address');
-const checkCookie = require('../middleware/checkCookie');
-const { cookerAuth } = require('../middleware/authorization');
 
-routes.post('/signup', checkCookie, async (req, res) => {
+const signup = async (req, res) => {
   const {
     email,
     password,
@@ -51,10 +45,10 @@ routes.post('/signup', checkCookie, async (req, res) => {
 
   const payload = createCookerToken(cooker);
   attachCookiesToResponse(res, payload);
-  return res.status(StatusCodes.OK).send(cooker);
-});
+  return res.status(StatusCodes.OK).json({ cooker });
+};
 
-routes.post('/login', checkCookie, async (req, res) => {
+const login = async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     throw new CustomError.BadRequestError('Please provide email and password');
@@ -71,17 +65,17 @@ routes.post('/login', checkCookie, async (req, res) => {
 
   const payload = createCookerToken(cooker);
   attachCookiesToResponse(res, payload);
-  res.status(StatusCodes.OK).send(cooker);
-});
+  res.status(StatusCodes.OK).json({ cooker });
+};
 
 //logout route
-routes.get('/logout', cookerAuth, (req, res) => {
+const logout = (req, res) => {
   res.clearCookie('token', {
     signed: true,
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 14 * 1000,
   });
-  res.send('logged out');
-});
+  res.status(StatusCodes.OK).json('logged out');
+};
 
-module.exports = routes;
+module.exports = { signup, login, logout };

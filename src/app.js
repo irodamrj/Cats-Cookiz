@@ -12,22 +12,29 @@ const morgan = require('morgan');
 const passportSetup = require('./config/passport');
 const swaggerDocs = require('./SwaggerDocs/swaggerdoc');
 const swaggerUi = require('swagger-ui-express');
+
 //database
 const db = require('./db');
 
-//route middleware
-// const authCustomerRoute = require('./controllers/authForCustomer.js');
-// const authCookerRoute = require('./controllers/authForCooker');
-// const authForAdmin = require('./controllers/authForAdmin.js');
+
 
 //Swagger middleware
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+// Auth routes
+const authCustomerRoute = require('./routes/authForCustomer.js');
+const authCookerRoute = require('./routes/authForCooker');
+const authForAdmin = require('./routes/authForAdmin');
 //routes
-const customerRoute = require('./controllers/customers');
-const orderRoute = require('./controllers/orders');
-const adminRoute = require('./controllers/admin');
-const cookerRoute = require('./controllers/cookers');
-const public = require('./controllers/publicRoutes/public');
+const customerRoute = require('./routes/customers');
+const orderRoute = require('./routes/orders');
+const adminRoute = require('./routes/admin');
+const cookerRoute = require('./routes/cookers');
+const public = require('./routes/public');
+
+//Swagger middleware
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
 
 //middlewares
 const errorHandlerMiddleware = require('./middleware/error-handler');
@@ -78,7 +85,7 @@ app.use('/home', public);
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 
-const port = 5000;
+const port = 3000;
 console.log(process.env.PORT);
 
 const PROXY_PORT = process.env.PROXY_PORT ?? port;
