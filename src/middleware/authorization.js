@@ -8,9 +8,7 @@ const cookerAuth = async (req, res, next) => {
   if (cooker) {
     next();
   } else {
-    throw new CustomError.UnauthorizedError(
-      'You are not authorized to reach this endpoint'
-    );
+    return res.redirect('/api/auth/cooker/login');
   }
 };
 
