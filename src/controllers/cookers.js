@@ -152,7 +152,13 @@ const setPaymentType = async (req, res) => {
   if (!req.body.paymentType) {
     throw new CustomError.BadRequestError('Payment type cannot be empty.');
   }
-  cooker.addPaymentMethod(req.body.paymentType);
+
+  if (req.body.paymentType) {
+    cooker.paymentType.addToSet(req.body.paymentType);
+  }
+  if (req.body.paymentType === 'card') {
+    cooker.status = 'Approved';
+  }
   cooker.save();
 
   return res

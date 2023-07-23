@@ -16,8 +16,6 @@ const swaggerUi = require('swagger-ui-express');
 //database
 const db = require('./db');
 
-
-
 //Swagger middleware
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
@@ -36,7 +34,6 @@ db.connect();
 
 //Swagger middleware
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-
 
 //middlewares
 const errorHandlerMiddleware = require('./middleware/error-handler');
