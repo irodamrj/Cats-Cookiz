@@ -16,8 +16,6 @@ const swaggerUi = require('swagger-ui-express');
 //database
 const db = require('./db');
 
-
-
 //Swagger middleware
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
@@ -34,7 +32,6 @@ const public = require('./routes/public');
 
 //Swagger middleware
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-
 
 //middlewares
 const errorHandlerMiddleware = require('./middleware/error-handler');
@@ -85,7 +82,7 @@ app.use('/home', public);
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 
-const port = 3000;
+const port = 5000;
 console.log(process.env.PORT);
 
 const PROXY_PORT = process.env.PROXY_PORT ?? port;
