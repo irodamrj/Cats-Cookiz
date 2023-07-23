@@ -45,7 +45,7 @@ const signup = async (req, res) => {
 
   const payload = createCookerToken(cooker);
   attachCookiesToResponse(res, payload);
-  return res.status(StatusCodes.OK).json({ cooker });
+  return res.status(StatusCodes.CREATED).json({ cooker });
 };
 
 const login = async (req, res) => {
@@ -60,7 +60,7 @@ const login = async (req, res) => {
 
   const isMatch = await bcrypt.compare(password, cooker.password);
   if (!isMatch) {
-    throw new CustomError.UnauthenticatedError('Invalid Credentials second');
+    throw new CustomError.UnauthenticatedError('Invalid Credentials try again');
   }
 
   const payload = createCookerToken(cooker);

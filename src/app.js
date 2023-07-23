@@ -25,7 +25,9 @@ const customerRoute = require('./routes/customers');
 const orderRoute = require('./routes/orders');
 const adminRoute = require('./routes/admin');
 const cookerRoute = require('./routes/cookers');
-const public = require('./routes/public');
+const publicRoute = require('./routes/public');
+
+db.connect();
 
 //Swagger middleware
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
@@ -41,6 +43,7 @@ const {
 
 app.use(morgan('tiny'));
 
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser(process.env.SECRET_KEY));
 
@@ -66,6 +69,20 @@ app.use(
   })
 );
 
+app.use(function (err, req, res, next) {
+  if (err.name === 'UnauthorizedError') {
+    if (req.originalUrl.includes('cooker')) {
+      return res.redirect('/api/auth/cooker/login');
+    } else if (req.originalUrl.includes('customer')) {
+      return res.redirect('/api/auth/customer/login');
+    } else {
+      return res.redirect('/api/auth/admin/login');
+    }
+  } else {
+    next(err);
+  }
+});
+
 //routes
 app.use('/api/auth/customer', authCustomerRoute);
 app.use('/api/auth/cooker', authCookerRoute);
@@ -74,24 +91,17 @@ app.use('/api/customer', customerAuth, customerRoute);
 app.use('/api/admin', adminAuth, adminRoute);
 app.use('/api/cooker', cookerAuth, cookerRoute);
 app.use('/api/customer/order', customerAuth, orderRoute);
-app.use('/home', public);
+app.use('/home', publicRoute);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 
 const port = 5000;
-console.log(process.env.PORT);
 
 const PROXY_PORT = process.env.PROXY_PORT ?? port;
 if (!port && process.env.NODE_ENV !== 'test') {
   console.error('A port have to be specified in environment variable PORT');
   process.exit(1);
-}
-
-if (process.env.NODE_ENV !== 'test') {
-  db.connect().then(() => {
-    console.info('Connected to db');
-  });
 }
 
 if (process.env.NODE_ENV !== 'test') {

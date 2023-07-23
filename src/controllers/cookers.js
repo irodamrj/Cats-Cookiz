@@ -9,7 +9,6 @@ const getProfile = async (req, res) => {
   const cooker = await Cooker.findOne({ email: req.auth.email }).populate(
     'address'
   );
-
   return res.status(StatusCodes.OK).json({ cooker });
 };
 
@@ -36,11 +35,9 @@ const updateProfile = async (req, res) => {
     { email: req.auth.email },
     { phonenumber, aboutCooker, openingHour, closingHour },
     { new: true }
-  ).populate('address');
+  );
 
-  return res
-    .status(StatusCodes.OK)
-    .json(updatedCooker + ' is updated successfully');
+  return res.status(StatusCodes.OK).json(updatedCooker);
 };
 
 const getAllOrders = async (req, res) => {
@@ -113,7 +110,7 @@ const createDish = async (req, res) => {
     image: image,
     cookerId: cooker._id,
   });
-  return res.status(StatusCodes.OK).json({ newDish });
+  return res.status(StatusCodes.CREATED).json({ newDish });
 };
 
 const deleteDish = async (req, res) => {
