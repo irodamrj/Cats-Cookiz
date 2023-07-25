@@ -99,7 +99,7 @@ app.use('/home', publicRoute);
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 
-const port = 5000;
+const port = 3000;
 
 const PROXY_PORT = process.env.PROXY_PORT ?? port;
 if (!port && process.env.NODE_ENV !== 'test') {

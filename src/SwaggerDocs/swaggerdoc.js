@@ -5,6 +5,7 @@ const cookerApiDoc = require('./cooker/cookerDocs');
 const customerApiDocs = require('./costumer/costumerDocs');
 // const adminDocs = require('./admin/adminDocs');
 const orderDocs = require('./order/orderDocs');
+const puplicApiDocs = require("./public/publicApis")
 
 const options = {
   definition: {
@@ -13,15 +14,21 @@ const options = {
       title: 'Cookiz API Docs',
       version: '1.0.0',
     },
-    tags: [
-      {
-        name: 'Customer',
-        description: 'API to manage your Customer Acc',
-      },
+    tags: [ 
       {
         name: 'Cooker',
         description: 'API to manage your Cooker Acc',
       },
+      
+      {
+        name: 'Public',
+        description: 'API to manage your Public Api',
+      },
+      {
+        name: 'Customer',
+        description: 'API to manage your Customer Acc',
+      },
+     
     ],
     paths: {
       ...cookerDoc.paths,
@@ -30,6 +37,7 @@ const options = {
       ...customerApiDocs.paths,
       // ...adminDocs.paths,
       ...orderDocs.paths,
+      ...puplicApiDocs.paths,
     },
   },
   apis: [
@@ -38,7 +46,8 @@ const options = {
     './src/controllers/cookers.js',
     './src/controllers/customers.js',
     './src/controllers/admin.js',
-    './src/controllers/orders.js'
+    './src/controllers/orders.js',
+    './src/controllers/public.js'
     
 
   ],
