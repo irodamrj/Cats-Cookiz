@@ -28,9 +28,7 @@ const customerAuth = async (req, res, next) => {
   if (customer) {
     next();
   } else {
-    throw new CustomError.UnauthorizedError(
-      'You are not authorized to reach this endpoint'
-    );
+    return res.redirect('/api/auth/customer/login');
   }
 };
 
@@ -39,9 +37,7 @@ const adminAuth = async (req, res, next) => {
   if (admin) {
     next();
   } else {
-    throw new CustomError.UnauthorizedError(
-      'You are not authorized to reach this endpoint'
-    );
+    return res.redirect('/api/auth/admin/login');
   }
 };
 
