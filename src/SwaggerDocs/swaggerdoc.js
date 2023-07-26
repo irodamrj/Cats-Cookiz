@@ -3,7 +3,7 @@ const cookerDoc = require('./auth/cookerDoc');
 const CustomerDocs = require('./auth/customerDocs');
 const cookerApiDoc = require('./cooker/cookerDocs');
 const customerApiDocs = require('./costumer/costumerDocs');
-const adminDocs = require('./admin/adminDocs');
+// const adminDocs = require('./admin/adminDocs');
 const orderDocs = require('./order/orderDocs');
 
 const options = {
@@ -28,7 +28,7 @@ const options = {
       ...CustomerDocs.paths,
       ...cookerApiDoc.paths,
       ...customerApiDocs.paths,
-      ...adminDocs.paths,
+      // ...adminDocs.paths,
       ...orderDocs.paths,
     },
   },

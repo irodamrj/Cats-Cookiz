@@ -5,7 +5,12 @@ const ROUTES = {
   COOK_PAYMENT: '/api/cooker/paymentType',
   COOK_LOGIN: '/api/auth/cooker/login',
   COOK_SIGNUP: '/api/auth/cooker/signup',
+  CUSTOMER_LOGIN:'/api/auth/customer/login',
+  CUSTOMER_SIGNUP:'/api/auth/customer/signup',
+  CUSTOMER_PROFILE:'/api/auth/customer/',
+  CUSTOMER_CART:'/api/auth/customer/cart'
 };
+
 
 const user1 = {
   email: 'first@gmail.com',
@@ -37,4 +42,19 @@ const userSignup = {
   closingHour: '24.00',
 };
 
-module.exports = { ROUTES, user1, incorrectUser, userSignup };
+//customer data
+
+
+const customer1 = {
+  email: 'iroda@gmail.com',
+  password: '123456',
+};
+
+const customerSignup = {
+  firstName: 'iroda',
+  lastName: 'yılmaz',
+  email: 'first@gmail.com',
+  password: '123456',
+};
+
+module.exports = { ROUTES, user1, incorrectUser, userSignup,customer,incorrectCustomer, customerSignup};
