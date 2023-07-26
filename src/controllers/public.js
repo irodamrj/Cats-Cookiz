@@ -4,7 +4,7 @@ const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
 
 const getDishes = async (req, res) => {
-  const dishes = await Dish.find().populate('cookerId');
+  const dishes = await Dish.find().populate('cookerId').limit(10);
   return res.status(StatusCodes.OK).json({ dishes });
 };
 
@@ -23,7 +23,7 @@ const getAbout = async (req, res) => {
 
 const getCookers = async (req, res) => {
   const cookers = await Cooker.find();
-  return res.status(StatusCodes.OK).json({ cookers });
+  return res.status(StatusCodes.OK).json({ cookers }).limit(10);
 };
 
 const getACooker = async (req, res) => {
