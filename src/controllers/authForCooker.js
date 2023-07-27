@@ -3,6 +3,7 @@ const { attachCookiesToResponse } = require('../utils/jwt');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
 const Cooker = require('../models/cooker');
+const sendEmail = require('../utils/sendEmail');
 const { createCookerToken } = require('../utils/createToken');
 const Adress = require('../models/address');
 
@@ -45,6 +46,7 @@ const signup = async (req, res) => {
 
   const payload = createCookerToken(cooker);
   attachCookiesToResponse(res, payload);
+  sendEmail(email, 'cooker');
   return res.status(StatusCodes.CREATED).json({ cooker });
 };
 
