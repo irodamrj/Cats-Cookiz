@@ -53,7 +53,7 @@ const updateOrder = async (req, res) => {
   return res
     .status(StatusCodes.OK)
     .json(
-      `status of the order with Id ${orderId} is updated to ${orderStatus}`
+      `status of the order with Id ${orderId} is updated to ${updatedOrder}`
     );
 };
 
