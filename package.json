@@ -6,9 +6,12 @@
   "author": "Ammar-64",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon src/app.js"
+    "start": "nodemon src/app.js",
+    "test": "jest"
   },
   "dependencies": {
+    "@types/jest": "^29.5.3",
+    "@types/supertest": "^2.0.12",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
     "dotenv": "^14.2.0",
@@ -33,11 +36,10 @@
   "devDependencies": {
     "cookie-signature": "^1.1.0",
     "encrypt-cookie": "^1.1.5",
-    "jest": "^27.4.7",
     "jsonwebtoken": "^8.5.1",
     "monkeypatch": "^1.0.0",
     "nodemon": "^2.0.14",
     "prettier": "^2.4.1",
-    "supertest": "^6.1.6"
+    "supertest": "^6.3.3"
   }
 }

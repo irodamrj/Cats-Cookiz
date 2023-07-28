@@ -1,0 +1,72 @@
+const ROUTES = {
+  COOK_PROFILE: '/api/cooker',
+  COOK_ORDERS: '/api/cooker/orders',
+  COOK_DISHES: '/api/cooker/dishes',
+  COOK_PAYMENT: '/api/cooker/paymentType',
+  COOK_LOGIN: '/api/auth/cooker/login',
+  COOK_SIGNUP: '/api/auth/cooker/signup',
+  CUSTOMER_LOGIN: '/api/auth/customer/login',
+  CUSTOMER_SIGNUP: '/api/auth/customer/signup',
+  CUSTOMER_ORDERS: '/api/customer/order',
+  CUSTOMER_CART: '/api/customer/cart',
+};
+
+const items = { itemId: ['64bc5e0196f2c61b22b3bc6a'] };
+
+const customer1 = {
+  email: 'iroda@gmail.com',
+  password: '123456',
+};
+
+const customerSignup = {
+  firstName: 'iroda',
+  lastName: 'yılmaz',
+  email: 'first@gmail.com',
+  password: '123456',
+};
+
+const comments = {
+  rating: 2.3,
+  commentText: 'not Good Service',
+};
+
+const user1 = {
+  email: 'first@gmail.com',
+  password: '123456',
+};
+const incorrectUser = {
+  email: 'noexistent@gmail.com',
+  password: '2346888',
+};
+
+const userSignup = {
+  username: 'Tashkent restaurant',
+  email: 'new@gmail.com',
+  password: '123456',
+  address: {
+    country: 'Uzbekistan',
+    city: 'Tashkent',
+    state: 'UZ',
+    zipcode: 12345,
+    street: 'Main Street',
+    buildingNumber: 123,
+    buildingName: 'ABC Building',
+    flatNumber: 4,
+    floor: 2,
+  },
+  phoneNumber: '1254566522',
+  aboutCooker: 'about cooker',
+  openingHour: '08.00',
+  closingHour: '24.00',
+};
+
+module.exports = {
+  ROUTES,
+  user1,
+  incorrectUser,
+  userSignup,
+  customer1,
+  customerSignup,
+  items,
+  comments,
+};

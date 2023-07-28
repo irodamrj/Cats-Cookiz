@@ -7,7 +7,6 @@ const orderDocs =require ('./order/orderDocs')
 const adminDocs = require('./admin/adminDocs');
 const adminDoc =require('./auth/adminDoc');
 
-
 const options = {
   definition: {
     openapi: '3.0.0',
@@ -34,6 +33,7 @@ const options = {
       ...adminDocs.paths,
       ...adminDoc.paths,
 
+    
     },
   },
   apis: [

@@ -6,34 +6,8 @@ const Customer = require('../models/customer');
 const bcrypt = require('bcryptjs');
 const { createUserToken } = require('../utils/createToken');
 
-//Google authentication page route
-
-const google = function () {
-  passport.authenticate('google', {
-    scope: ['profile', 'email', 'openid'],
-  });
-};
-
-const googleCallbackFunc = async (req, res) => {
-  const payload = createUserToken(req.user);
-  console.log(payload);
-  attachCookiesToResponse(res, payload);
-  return res.status(StatusCodes.OK).json(req.user);
-};
-//facebook authentication page route
-
-const facebook = function () {
-  passport.authenticate('facebook', { scope: ['public_profile', 'email'] });
-};
-
-const facebookCb = function (req, res) {
-  // Successful authentication, redirect home.
-  const payload = createUserToken(req.user);
-  attachCookiesToResponse(res, payload);
-};
 //local signup
 const signup = async (req, res) => {
-  console.log('signup called');
   const { firstName, lastName, email, password } = req.body;
   const emailAlreadyExists = await Customer.findOne({ email });
 
@@ -92,10 +66,6 @@ const logout = (req, res) => {
 };
 
 module.exports = {
-  google,
-  googleCallbackFunc,
-  facebook,
-  facebookCb,
   signup,
   login,
   logout,

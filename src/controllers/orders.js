@@ -16,7 +16,7 @@ const getAllOrders = async (req, res) => {
     .populate('dishes')
     .populate('deliveryAddress');
 
-  return res.status(StatusCodes.OK).json({ orders });
+  return res.status(StatusCodes.OK).json(orders);
 };
 
 const getAnOrder = async (req, res) => {
@@ -99,7 +99,6 @@ const createOrder = async (req, res) => {
   return res.status(StatusCodes.CREATED).json({ order });
 };
 
-//not delete order, just cancel
 const cancelOrder = async (req, res) => {
   const orderId = req.params.id;
   const customerId = await CustomerModel.findOne(
@@ -126,7 +125,6 @@ const cancelOrder = async (req, res) => {
   return res.status(StatusCodes.OK).json('Order cancelled successfully');
 };
 
-//do not add order to cooker schema
 const createComment = async (req, res) => {
   const { rating, commentText } = req.body;
   const orderId = req.params.id;
@@ -164,11 +162,9 @@ const createComment = async (req, res) => {
   });
 
   const comments = await CommentModel.find({ cookerId: cooker._id });
-  // const countOfComments = await Comment.count({ cookerId: cooker._id });
 
   let averageRating = 0;
   let sumOfRatings = 0;
-  console.log(comments.length);
   if (comments.length > 0) {
     for (let i = 0; i < comments.length; i++) {
       sumOfRatings += comments[i].rating;
