@@ -154,7 +154,7 @@ describe('Cookers', () => {
 
     it('Patch cooker/profile should update cookers profile', async () => {
       const updatedProperty = {
-        country: 'Özbekistan',
+        country: 'Ozbekistan',
         city: 'Tashkent',
         state: 'UZ',
         zipcode: 12345,

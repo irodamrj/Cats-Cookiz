@@ -10,7 +10,7 @@ const { expressjwt: jwt } = require('express-jwt');
 const passport = require('passport');
 const morgan = require('morgan');
 const passportSetup = require('./config/passport');
-const swaggerDocs = require('./SwaggerDocs/swaggerdoc');
+const swaggerDocs = require('./apiDocs/swaggerdoc');
 const swaggerUi = require('swagger-ui-express');
 
 //database

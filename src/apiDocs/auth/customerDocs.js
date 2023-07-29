@@ -1,71 +1,71 @@
 module.exports = {
   paths: {
-    '/api/auth/customer/google': {
-      get: {
-        tags: ['Customer'],
-        summary: 'Google Authentication Page',
-        description:
-          'Redirects the customer to the Google authentication page for sign-in',
-        responses: {
-          302: {
-            description: 'Redirect to Google authentication page',
-            headers: {
-              Location: {
-                schema: {
-                  type: 'string',
-                  description: 'Redirect URL to the Google authentication page',
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-    '/api/auth/customer/google/callback': {
-      get: {
-        tags: ['Customer'],
-        summary: 'Google Authentication Callback',
-        description:
-          'Callback route for handling the Google authentication response',
-        responses: {
-          302: {
-            description: 'Redirect after successful Google authentication',
-          },
-          401: {
-            description: 'Unauthorized - Google authentication failed',
-          },
-        },
-      },
-    },
-    '/api/auth/customer/facebook': {
-      get: {
-        tags: ['Customer'],
-        summary: 'Facebook Authentication Page',
-        description:
-          'Redirects the customer to the Facebook authentication page for sign-in',
-        responses: {
-          302: {
-            description: 'Redirect to Facebook authentication page',
-          },
-        },
-      },
-    },
-    '/api/auth/customer/facebook/callback': {
-      get: {
-        tags: ['Customer'],
-        summary: 'Facebook Authentication Callback',
-        description:
-          'Callback route for handling the Facebook authentication response',
-        responses: {
-          302: {
-            description: 'Redirect after successful Facebook authentication',
-          },
-          401: {
-            description: 'Unauthorized - Facebook authentication failed',
-          },
-        },
-      },
-    },
+    // '/api/auth/customer/google': {
+    //   get: {
+    //     tags: ['Customer'],
+    //     summary: 'Google Authentication Page',
+    //     description:
+    //       'Redirects the customer to the Google authentication page for sign-in',
+    //     responses: {
+    //       302: {
+    //         description: 'Redirect to Google authentication page',
+    //         headers: {
+    //           Location: {
+    //             schema: {
+    //               type: 'string',
+    //               description: 'Redirect URL to the Google authentication page',
+    //             },
+    //           },
+    //         },
+    //       },
+    //     },
+    //   },
+    // },
+    // '/api/auth/customer/google/callback': {
+    //   get: {
+    //     tags: ['Customer'],
+    //     summary: 'Google Authentication Callback',
+    //     description:
+    //       'Callback route for handling the Google authentication response',
+    //     responses: {
+    //       302: {
+    //         description: 'Redirect after successful Google authentication',
+    //       },
+    //       401: {
+    //         description: 'Unauthorized - Google authentication failed',
+    //       },
+    //     },
+    //   },
+    // },
+    // '/api/auth/customer/facebook': {
+    //   get: {
+    //     tags: ['Customer'],
+    //     summary: 'Facebook Authentication Page',
+    //     description:
+    //       'Redirects the customer to the Facebook authentication page for sign-in',
+    //     responses: {
+    //       302: {
+    //         description: 'Redirect to Facebook authentication page',
+    //       },
+    //     },
+    //   },
+    // },
+    // '/api/auth/customer/facebook/callback': {
+    //   get: {
+    //     tags: ['Customer'],
+    //     summary: 'Facebook Authentication Callback',
+    //     description:
+    //       'Callback route for handling the Facebook authentication response',
+    //     responses: {
+    //       302: {
+    //         description: 'Redirect after successful Facebook authentication',
+    //       },
+    //       401: {
+    //         description: 'Unauthorized - Facebook authentication failed',
+    //       },
+    //     },
+    //   },
+    // },
     '/api/auth/customer/signup': {
       post: {
         tags: ['Customer'],
