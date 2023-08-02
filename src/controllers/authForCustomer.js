@@ -56,7 +56,7 @@ const signup = async (req, res) => {
   });
   const payload = createUserToken(customer);
   attachCookiesToResponse(res, payload);
-  return res.status(StatusCodes.OK).json({ customer });
+  return res.status(StatusCodes.CREATED).json({ customer });
 };
 
 const login = async (req, res) => {

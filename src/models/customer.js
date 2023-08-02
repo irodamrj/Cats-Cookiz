@@ -55,7 +55,6 @@ const customerSchema = new Schema({
       total: 0,
     },
   },
-
   address: {
     type: Schema.Types.ObjectId,
     ref: `Address`,

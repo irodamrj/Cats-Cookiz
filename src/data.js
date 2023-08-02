@@ -7,15 +7,17 @@ const ROUTES = {
   COOK_SIGNUP: '/api/auth/cooker/signup',
   CUSTOMER_LOGIN:'/api/auth/customer/login',
   CUSTOMER_SIGNUP:'/api/auth/customer/signup',
-  CUSTOMER_PROFILE:'/api/auth/customer/',
-  CUSTOMER_CART:'/api/auth/customer/cart'
-};
+  CUSTOMER_GOOGLE:'/api/auth/customer/google',
 
+  CUSTOMER_PROFILE:'/api/customer/',
+  CUSTOMER_CART:'/api/customer/cart'
+};
 
 const user1 = {
   email: 'first@gmail.com',
   password: '123456',
 };
+
 const incorrectUser = {
   email: 'noexistent@gmail.com',
   password: '2346888',
@@ -43,18 +45,16 @@ const userSignup = {
 };
 
 //customer data
-
-
-const customer1 = {
+const customer = {
   email: 'iroda@gmail.com',
   password: '123456',
 };
 
 const customerSignup = {
-  firstName: 'iroda',
+  firstName: 'sara',
   lastName: 'yılmaz',
-  email: 'first@gmail.com',
+  email: 'test@gmail.com',
   password: '123456',
 };
 
-module.exports = { ROUTES, user1, incorrectUser, userSignup,customer,incorrectCustomer, customerSignup};
+module.exports = { ROUTES,user1, incorrectUser, userSignup, customer, customerSignup,};
