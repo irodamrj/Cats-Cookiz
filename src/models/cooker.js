@@ -63,13 +63,4 @@ const cookerSchema = new Schema({
   ],
 });
 
-cookerSchema.methods.addPaymentMethod = function (type) {
-  if (type) {
-    this.paymentType.addToSet(type);
-  }
-  if (type === 'card') {
-    this.status = 'Approved';
-  }
-};
-
 module.exports = mongoose.model('Cooker', cookerSchema);

@@ -5,12 +5,32 @@ const ROUTES = {
   COOK_PAYMENT: '/api/cooker/paymentType',
   COOK_LOGIN: '/api/auth/cooker/login',
   COOK_SIGNUP: '/api/auth/cooker/signup',
-  CUSTOMER_LOGIN:'/api/auth/customer/login',
-  CUSTOMER_SIGNUP:'/api/auth/customer/signup',
   CUSTOMER_GOOGLE:'/api/auth/customer/google',
-
   CUSTOMER_PROFILE:'/api/customer/',
-  CUSTOMER_CART:'/api/customer/cart'
+  CUSTOMER_CART:'/api/customer/cart',
+  CUSTOMER_LOGIN: '/api/auth/customer/login',
+  CUSTOMER_SIGNUP: '/api/auth/customer/signup',
+  CUSTOMER_ORDERS: '/api/customer/order',
+  CUSTOMER_CART: '/api/customer/cart',
+};
+
+const items = { itemId: ['64bc5e0196f2c61b22b3bc6a'] };
+
+const customer1 = {
+  email: 'iroda@gmail.com',
+  password: '123456',
+};
+
+// const customerSignup = {
+//   firstName: 'iroda',
+//   lastName: 'yılmaz',
+//   email: 'first@gmail.com',
+//   password: '123456',
+// };
+
+const comments = {
+  rating: 2.3,
+  commentText: 'not Good Service',
 };
 
 const user1 = {
@@ -57,4 +77,13 @@ const customerSignup = {
   password: '123456',
 };
 
-module.exports = { ROUTES,user1, incorrectUser, userSignup, customer, customerSignup,};
+module.exports = {
+  ROUTES,
+  user1,
+  incorrectUser,
+  userSignup,
+  customer1,
+  customerSignup,
+  items,
+  comments,
+};

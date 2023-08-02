@@ -1,24 +1,24 @@
-const CustomerModel = require('../models/customer');
-const CookModel = require('../models/cooker');
-const OrderModel = require('../models/order');
-const CommentModel = require('../models/comment');
-const AddressModel = require('../models/address');
-const DishModel = require('../models/dish');
+const Customer = require('../models/customer');
+const Cooker = require('../models/cooker');
+const Order = require('../models/order');
+const Comment = require('../models/comment');
+const Address = require('../models/address');
+const Dish = require('../models/dish');
 const CustomError = require('../errors');
 const { StatusCodes } = require('http-status-codes');
 
 //do not delete orders
 const deleteCooker = async (req, res) => {
   const { id } = req.params;
-  const cook = await CookModel.findByIdAndDelete(id).populate('address');
+  const cook = await Cooker.findByIdAndDelete(id).populate('address');
   if (!cook) {
     throw new Error('Cook not found');
   }
-  await CommentModel.deleteMany({ cookerId: id });
+  await Comment.deleteMany({ cookerId: id });
   if (cook.address) {
-    await AddressModel.findByIdAndDelete(cook.address._id);
+    await Address.findByIdAndDelete(cook.address._id);
   }
-  await DishModel.deleteMany({ cookerId: id });
+  await Dish.deleteMany({ cookerId: id });
   return res.status(StatusCodes.OK).json('Cooker deleted successfully');
 };
 
@@ -26,7 +26,7 @@ const deleteCooker = async (req, res) => {
 const deleteCustomer = async (req, res) => {
   const { id } = req.params;
   console.log(id);
-  const customer = await CustomerModel.findOneAndUpdate(
+  const customer = await Customer.findOneAndUpdate(
     { _id: id },
     { $unset: { cart: 1 } }
   ).populate('address');
@@ -34,17 +34,17 @@ const deleteCustomer = async (req, res) => {
     throw new CustomError.NotFoundError('Customer not found');
   }
   if (customer.address) {
-    await AddressModel.findByIdAndDelete(customer.address._id);
+    await Address.findByIdAndDelete(customer.address._id);
   }
 
-  await CustomerModel.findByIdAndDelete(id);
+  await Customer.findByIdAndDelete(id);
   return res.status(StatusCodes.OK).json('Customer deleted successfully');
 };
 
 const updateOrder = async (req, res) => {
   const orderId = req.params.id;
 
-  const updatedOrder = await OrderModel.findByIdAndUpdate(
+  const updatedOrder = await Order.findByIdAndUpdate(
     { _id: orderId },
     { status: 'Cancelled' },
     { new: true }
@@ -57,4 +57,26 @@ const updateOrder = async (req, res) => {
     );
 };
 
-module.exports = { deleteCooker, deleteCustomer, updateOrder };
+const getDishes = async (req, res) => {
+  const dishes = await Dish.find().populate('cookerId');
+  return res.status(StatusCodes.OK).json({ dishes });
+};
+
+const getCookers = async (req, res) => {
+  const cookers = await Cooker.find();
+  return res.status(StatusCodes.OK).json({ cookers });
+};
+
+const getCustomers = async (req, res) => {
+  const customers = await Customer.find();
+  return res.status(StatusCodes.OK).json({ customers });
+};
+
+module.exports = {
+  deleteCooker,
+  deleteCustomer,
+  updateOrder,
+  getDishes,
+  getCookers,
+  getCustomers,
+};
