@@ -66,6 +66,7 @@ describe('Orders', () => {
     it('Get /api/customer/order/all should return empty array for newly signed up customers', async () => {
       const res = await customersignup
         .get(`${ROUTES.CUSTOMER_ORDERS}/all`)
+        .set('Accept', 'application/json')
         .expect('Content-Type', /json/);
 
       const customer = await mongoose.connection
@@ -106,7 +107,7 @@ describe('Orders', () => {
       expect(res.statusCode).toBe(200);
     });
 
-    it('Post /api/customer/cart should empty the customers cart', async () => {
+    it('Post /api/customer/order should empty the customers cart', async () => {
       const res = await customerlogin
         .post(ROUTES.CUSTOMER_ORDERS)
         .expect('Content-Type', /json/);
