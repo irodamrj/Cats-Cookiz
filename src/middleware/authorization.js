@@ -8,7 +8,8 @@ const cookerAuth = async (req, res, next) => {
   if (cooker) {
     next();
   } else {
-    return res.redirect('/api/auth/cooker/login');
+    // return res.redirect('/api/auth/cooker/login');
+    throw new CustomError.UnauthorizedError('Not authorized');
   }
 };
 
@@ -28,7 +29,8 @@ const customerAuth = async (req, res, next) => {
   if (customer) {
     next();
   } else {
-    return res.redirect('/api/auth/customer/login');
+    // return res.redirect('/api/auth/customer/login');
+    throw new CustomError.UnauthorizedError('Not authorized');
   }
 };
 
@@ -37,7 +39,8 @@ const adminAuth = async (req, res, next) => {
   if (admin) {
     next();
   } else {
-    return res.redirect('/api/auth/admin/login');
+    // return res.redirect('/api/auth/admin/login');
+    throw new CustomError.UnauthorizedError('Not authorized');
   }
 };
 
