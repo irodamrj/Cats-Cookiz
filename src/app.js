@@ -16,9 +16,6 @@ const swaggerUi = require('swagger-ui-express');
 //database
 const db = require('./db');
 
-//Swagger middleware
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-
 // Auth routes
 const authCustomerRoute = require('./routes/authForCustomer.js');
 const authCookerRoute = require('./routes/authForCooker');
