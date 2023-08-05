@@ -1,71 +1,5 @@
 module.exports = {
   paths: {
-    '/api/auth/customer/google': {
-      get: {
-        tags: ['Customer'],
-        summary: 'Google Authentication Page',
-        description:
-          'Redirects the customer to the Google authentication page for sign-in',
-        responses: {
-          302: {
-            description: 'Redirect to Google authentication page',
-            headers: {
-              Location: {
-                schema: {
-                  type: 'string',
-                  description: 'Redirect URL to the Google authentication page',
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-    '/api/auth/customer/google/callback': {
-      get: {
-        tags: ['Customer'],
-        summary: 'Google Authentication Callback',
-        description:
-          'Callback route for handling the Google authentication response',
-        responses: {
-          302: {
-            description: 'Redirect after successful Google authentication',
-          },
-          401: {
-            description: 'Unauthorized - Google authentication failed',
-          },
-        },
-      },
-    },
-    '/api/auth/customer/facebook': {
-      get: {
-        tags: ['Customer'],
-        summary: 'Facebook Authentication Page',
-        description:
-          'Redirects the customer to the Facebook authentication page for sign-in',
-        responses: {
-          302: {
-            description: 'Redirect to Facebook authentication page',
-          },
-        },
-      },
-    },
-    '/api/auth/customer/facebook/callback': {
-      get: {
-        tags: ['Customer'],
-        summary: 'Facebook Authentication Callback',
-        description:
-          'Callback route for handling the Facebook authentication response',
-        responses: {
-          302: {
-            description: 'Redirect after successful Facebook authentication',
-          },
-          401: {
-            description: 'Unauthorized - Facebook authentication failed',
-          },
-        },
-      },
-    },
     '/api/auth/customer/signup': {
       post: {
         tags: ['Customer'],
@@ -101,27 +35,24 @@ module.exports = {
             content: {
               'application/json': {
                 schema: {
-                  schema: {
-                    type: 'object',
-                    properties: {
-                      firstName: {
-                        type: 'string',
-                      },
-                      lastName: {
-                        type: 'string',
-                      },
-                      email: {
-                        type: 'string',
-                      },
-                      password: {
-                        type: 'string',
-                      },
+                 type: "object",
+                 example: {
+                   firstName: "John",
+                   lastName: "Mac",
+                   email: "john@email.com",
+                   password: "$2a$10$m4E0KIFDx9b.O6NU30IKFu9xtmca/knZJm4s3WhtQa75j1fd062Iq",
+                   cart: {
+                     itemId: ["6789uiofdhjkt7","435678zuighjbnm" ],
+                     total: 90,
+                     _id: "5678ziufdhjkn98u",
                     },
-                  },
-                },
+                
+                   _id: "567890uihjgjhztuiuzghjbjhu7iu"
+                 },
+               },
               },
-            },
-          },
+           },
+         },
           400: {
             description:
               'Bad Request - Email already exists or invalid password',
@@ -160,13 +91,63 @@ module.exports = {
                 schema: {
                   type: 'object',
                   properties: {
-                    email: {
-                      type: 'string',
-                    },
-                    password: {
-                      type: 'string',
-                    },
+                    customer: {
+                      properties:{
+                        _id: {
+                          type: "string",
+                        },
+                        firstName: {
+                          type: "string",
+                        },
+                        lastName: {
+                          type: "string",
+                        },
+                        email: {
+                          type : "string"
+                        },
+                        password: {
+                          type: "string"
+                        },
+                        cart: {
+                          properties: {
+                            itemId: [],
+                            total: {
+                              type: "number"
+                            },
+                            _id: {
+                              type: "string"
+                            },
+                          }
+                        },
+                        address: {
+                          type: "string"
+                        },
+                        phoneNumber: {
+                          type: "string"
+                        },
+                        profilePicture: {
+                          type:"string"
+                        },
+
+                      }
+                    }
                   },
+                  example: {
+                     _id: "64cac7d0edc52cebf1cb42e9",
+                     firstName: "Customer",
+                     lastName: "Costomer",
+                     email: "customer@customer.com",
+                     password: "$2a$10$Yu1YlUE7jD0aKOxbQiMxo.MRTT166Q9a/HA0JfpPpxDEOwCEAGR.i",
+                     cart: {
+                      itemId: [],
+                      total: 0,
+                      _id: "64cac7d0edc52cebf1cb42e8"
+                       },
+                    address: "64cac7d6edc52cebf1cb42ee",
+                    phoneNumber : "36985212"
+
+                  }
+                  
                 },
               },
             },
@@ -193,6 +174,9 @@ module.exports = {
                 schema: {
                   type: 'string',
                 },
+                example: {
+                  type: "USER LOGGED OUT"
+                }
               },
             },
           },

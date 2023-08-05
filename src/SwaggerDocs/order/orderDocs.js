@@ -12,70 +12,54 @@ module.exports = {
             'application/json': {
               schema: {
                 type: 'array',
-                items: {
-                  type: 'object',
-                  properties: {
-                    orderId: {
-                      type: 'string',
-                    },
-                    customerName: {
-                      type: 'string',
-                    },
-                    totalAmount: {
-                      type: 'number',
-                    },
-                    status: {
-                      type: 'string',
-                      enum: ['Pending', 'Processing', 'Completed', 'Cancelled'],
-                    },
-                    dishes: {
-                      type: 'array',
-                      items: {
-                        type: 'object',
-                        properties: {
-                          dishId: {
-                            type: 'string',
-                          },
-                          dishName: {
-                            type: 'string',
-                          },
-                          price: {
-                            type: 'number',
-                          },
-                        },
+                  example: {
+                    _id: "65789009809hguzttito87g",
+                    dishes: [
+                      { 
+                       _id: "567tizugi76ubz",
+                       cookerId: "576986tzuig87iu",
+                       name: "Lahmancu",
+                       description: "hot",
+                       price: 45,
+                       image: "",
+                       createdAt: "2023-08-02T21:09:57.914Z",
+                       updatedAt: "2023-08-02T21:09:57.914Z"
                       },
-                    },
+                      { 
+                        _id: "567tizugi76ubz",
+                        cookerId: "576986tzuig87iu",
+                        name: "Lahmancu",
+                        description: "hot",
+                        price: 45,
+                        image: "",
+                        createdAt: "2023-08-02T21:09:57.914Z",
+                        updatedAt: "2023-08-02T21:09:57.914Z"
+                       }
+                    ],
+                    customerId: "67486tgre6t67t4rg7",
+                    cookerId:"576986tzuig87iu",
+                    status: "Completed",
                     deliveryAddress: {
-                      type: 'object',
-                      properties: {
-                        addressLine1: {
-                          type: 'string',
-                        },
-                        addressLine2: {
-                          type: 'string',
-                        },
-                        city: {
-                          type: 'string',
-                        },
-                        state: {
-                          type: 'string',
-                        },
-                        zipCode: {
-                          type: 'string',
-                        },
-                        country: {
-                          type: 'string',
-                        },
-                      },
+                      _id: "65789pzhi78tbiut",
+                      country: "Turkey",
+                      city: "Istanbul",
+                      street: "6576 Cd",
+                      buildingNumber: "2 C",
+                      flatNumber: 5,
+                      floor: 13
                     },
-                  },
-                },
+                    expectedDeliveryTime: "1hr ",
+                    totalAmount: 90,
+                    isAddressNew: false,
+                    createdAt:"2023-08-04T17:21:46.017Z",
+                    updatedAt:"2023-08-04T17:21:46.017Z"
+                  }
               },
             },
           },
         },
         '400': {
-          description: 'Bad Request - Invalid parameters',
+          description: 'Bad Request',
         },
       },
     },
@@ -91,9 +75,6 @@ module.exports = {
               in: 'path',
               required: true,
               description: 'ID of the order to fetch',
-              schema: {
-                type: 'string',
-              },
             },
           ],
           responses: {
@@ -103,61 +84,40 @@ module.exports = {
                 'application/json': {
                   schema: {
                     type: 'object',
-                    properties: {
-                      orderId: {
-                        type: 'string',
-                      },
-                      customerName: {
-                        type: 'string',
-                      },
-                      totalAmount: {
-                        type: 'number',
-                      },
-                      status: {
-                        type: 'string',
-                        enum: ['Pending', 'Processing', 'Completed', 'Cancelled'],
-                      },
-                      dishes: {
-                        type: 'array',
-                        items: {
-                          type: 'object',
-                          properties: {
-                            dishId: {
-                              type: 'string',
-                            },
-                            dishName: {
-                              type: 'string',
-                            },
-                            price: {
-                              type: 'number',
-                            },
-                          },
+                    example: {
+                      order: {
+                        _id: "67587v76r7r76rv65v4",
+                        dishes: [
+                          {
+                            _id: "767658585v565vb",
+                            cookerId: "7655896v68bt7h76b",
+                            name: "Burger",
+                            describe: "zzzzzz",
+                            price: 23,
+                            image: "4c65c4vtdfztrr",
+                            createdAt:"2023-08-02T21:09:57.914Z",
+                            updatedAt: "2023-08-02T21:09:57.914Z" 
+                          }
+                        ],
+                        customerId:"t6454c765476vb",
+                        cookerId: "7655896v68bt7h76b",
+                        sttus: "Completed",
+                        deliveryAddress: {
+                          _id:"675tv87b6r787ob",
+                          country: "Turkey",
+                          city: "Ankara",
+                          street: "33 Cd",
+                          buildingNumber: "1 C",
+                          flatNumber: 2,
+                          floor: 65
                         },
-                      },
-                      deliveryAddress: {
-                        type: 'object',
-                        properties: {
-                          addressLine1: {
-                            type: 'string',
-                          },
-                          addressLine2: {
-                            type: 'string',
-                          },
-                          city: {
-                            type: 'string',
-                          },
-                          state: {
-                            type: 'string',
-                          },
-                          zipCode: {
-                            type: 'string',
-                          },
-                          country: {
-                            type: 'string',
-                          },
-                        },
-                      },
-                    },
+                        expectedDeliveryTime: "1hr",
+                        totalAmount: 40,
+                        isAddressNew: false,
+                        createdAt:"2023-08-02T21:09:57.914Z",
+                        updatedAt: "2023-08-02T21:09:57.914Z" 
+                      }
+                    }
                   },
                 },
               },
@@ -171,22 +131,11 @@ module.exports = {
           },
         },
       },
-   
      '/api/customer/order': {
         post: {
           tags: ['Customer'],
           summary: 'Create New Order',
           description: 'Create a new order for a customer.',
-          requestBody: {
-            required: true,
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                },
-              },
-            },
-          },
           responses: {
             '201': {
               description: 'Order created successfully',
@@ -194,63 +143,27 @@ module.exports = {
                 'application/json': {
                   schema: {
                     type: 'object',
-                    properties: {
-                      orderId: {
-                        type: 'string',
-                      },
-                      customerName: {
-                        type: 'string',
-                      },
-                      totalAmount: {
-                        type: 'number',
-                      },
-                      status: {
-                        type: 'string',
-                        enum: ['Pending', 'Processing', 'Completed', 'Cancelled'],
-                      },
-                      dishes: {
-                        type: 'array',
-                        items: {
-                          type: 'object',
-                          properties: {
-                            dishId: {
-                              type: 'string',
-                            },
-                            dishName: {
-                              type: 'string',
-                            },
-                            price: {
-                              type: 'number',
-                            },
-                          },
-                        },
-                      },
-                      deliveryAddress: {
-                        type: 'object',
-                        properties: {
-                          addressLine1: {
-                            type: 'string',
-                          },
-                          addressLine2: {
-                            type: 'string',
-                          },
-                          city: {
-                            type: 'string',
-                          },
-                          state: {
-                            type: 'string',
-                          },
-                          country: {
-                            type: 'string',
-                          },
-                        },
-                      },
-                    },
+                    example: {
+                      dishes: [
+                        "64cac6256d95cefb18fefe97",
+                        "64cac6256d95cefb18fefe97"
+                      ],
+                      customerId: "657tguz89hgsdgsuzdu£$",
+                      cookerId : "6578903238hfbds78u",
+                      status : "Recived",
+                      deliveryAddress: "mnbsd67789sdb87zguh",
+                      expectedDeliveryTime: "20 minutes",
+                      totalAmount: 50,
+                      isAddressNew: false,
+                      _id: "z678hjdfj98ihjfd",
+                      createdAt:"2023-08-04T17:21:46.017Z",
+                      updatedAt:"2023-08-04T17:21:46.017Z",
+                    }
                   },
                 },
               },
             },
-            '400': {
+            '404': {
               description: 'Order cannot be empty',
             },
           },
@@ -266,11 +179,7 @@ module.exports = {
                   name: 'id',
                   in: 'path',
                   required: true,
-                  description: 'ID of the order to cancel',
-                  schema: {
-
-                    type: 'string',
-                  },
+                  description: 'ID of the order to cancel'
                 },
               ],
               responses: {
@@ -280,12 +189,7 @@ module.exports = {
                     'application/json': {
                       schema: {
                         type: 'string',
-                        properties: {
-                          message: {
-                            type: 'string',
-                            example: 'Order cancelled successfully',
-                          },
-                        },
+                        example: 'Order cancelled successfully'
                       },
                     },
                   },
@@ -310,9 +214,6 @@ module.exports = {
                   in: 'path',
                   required: true,
                   description: 'ID of the order to add a comment to',
-                  schema: {
-                    type: 'string',
-                  },
                 },
               ],
               requestBody: {
@@ -342,33 +243,19 @@ module.exports = {
                     'application/json': {
                       schema: {
                         type: 'object',
-                        properties: {
+                        example: {
                           comment: {
-                            type: 'object',
-                            properties: {
-                              _id: {
-                                type: 'string',
-                                format: 'uuid',
-                              },
-                              customerId: {
-                                type: 'string',
-                                format: 'uuid',
-                              },
-                              cookerId: {
-                                type: 'string',
-                                format: 'uuid',
-                              },
-                              rating: {
-                                type: 'number',
-                                minimum: 1,
-                                maximum: 5,
-                              },
-                              commentText: {
-                                type: 'string',
-                              },
+                            customerId:{
+                              _id: "67r876bjhguz76v7r67r"
                             },
-                          },
-                        },
+                            cookerId: "678765475847b6",
+                            commentText: "This was good",
+                            rating: 4,
+                            _id: "87bu78eb6t7bebr7r",
+                            createdAt:"2023-08-04T20:35:34.731Z",
+                            updatedAt: "2023-08-04T20:35:34.731Z",
+                          }
+                        }
                       },
                     },
                   },

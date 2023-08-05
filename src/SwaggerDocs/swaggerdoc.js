@@ -6,6 +6,7 @@ const customerApiDocs = require('./costumer/costumerDocs');
 const orderDocs =require ('./order/orderDocs')
 const adminDocs = require('./admin/adminDocs');
 const adminDoc =require('./auth/adminDoc');
+const publicApi = require("./public/publicdocs")
 
 const options = {
   definition: {
@@ -23,6 +24,14 @@ const options = {
         name: 'Cooker',
         description: 'API to manage your Cooker Acc',
       },
+      {
+        name: 'Admin',
+        description: 'API to manage your Cooker Acc',
+      },
+      {
+        name: 'Public',
+        description: 'API to manage your Cooker Acc',
+      },
     ],
     paths: {
       ...cookerDoc.paths,
@@ -32,10 +41,12 @@ const options = {
       ...orderDocs.paths,
       ...adminDocs.paths,
       ...adminDoc.paths,
+      ...publicApi.paths
 
     
     },
   },
+
   apis: [
     './src/controllers/authForCooker.js',
     './src/controllers/authForCustomer.js',
@@ -43,7 +54,8 @@ const options = {
     './src/controllers/customers.js',
     './src/controllers/orders.js',
     './src/controllers/admin.js',
-    './src/controllers/authForAdmin.js'
+    './src/controllers/authForAdmin.js',
+    '../controllers/public.js'
 
 
   ],

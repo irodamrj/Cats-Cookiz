@@ -29,21 +29,9 @@ module.exports = {
             200: {
               description: 'Successful login',
               content: {
-                'application/json': {
-                  schema: {
-                    type: 'object',
-                    description: 'Username of the authenticated Admin',
-                    properties: {
-                        username: {
-                          type: 'string',
-                          required: true,
-                        },
-                        password: {
-                          type: 'string',
-                          required: true,
-                        },
-                      },
-                  },
+                'text/plain': {
+                  type : "string",
+                  example: "Admin Logged in"
                 },
               },
             },
@@ -52,9 +40,6 @@ module.exports = {
             },
             401: {
               description: 'Unauthorized - Invalid Credentials',
-            },
-            default: {
-              description: 'Unexpected error',
             },
           },
         },
@@ -67,9 +52,15 @@ module.exports = {
           responses: {
             200: {
               description: 'Successful logout',
+              content: {
+                'text/plain': {
+                  type : "string",
+                  example: "Admin Logged out"
+                },
+              },
             },
-            default: {
-              description: 'Unexpected error',
+            400: {
+              description: 'Unauthorized -  bad request',
             },
           },
         },
