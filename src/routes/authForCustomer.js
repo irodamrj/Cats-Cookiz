@@ -8,6 +8,7 @@ const { StatusCodes } = require('http-status-codes');
 const checkCookie = require('../middleware/checkCookie');
 const { customerAuth } = require('../middleware/authorization');
 const { signup, login, logout } = require('../controllers/authForCustomer');
+const sendEmail = require('../utils/sendEmail');
 
 router.get(
   '/google',
@@ -23,8 +24,8 @@ router.get(
   }),
   async (req, res) => {
     const payload = createUserToken(req.user);
-    console.log(payload);
     attachCookiesToResponse(res, payload);
+    sendEmail(req.user.email, 'customer');
     return res.status(StatusCodes.OK).json(req.user);
   }
 );
@@ -36,8 +37,10 @@ router.get(
   '/facebook/callback',
   passport.authenticate('facebook', { failureRedirect: '/login' }),
   function (req, res) {
+    console.log(req);
     const payload = createUserToken(req.user);
     attachCookiesToResponse(res, payload);
+    sendEmail(req.user.email, 'customer');
     return res.status(StatusCodes.OK).json(req.user);
   }
 );

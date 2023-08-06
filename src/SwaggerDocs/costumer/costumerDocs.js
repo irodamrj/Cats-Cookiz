@@ -16,6 +16,9 @@ module.exports = {
                     customer: {
                       type: 'object',
                       properties: {
+                        _id: {
+                          type:"string",
+                        }, 
                         firstName: {
                           type: 'string',
                         },
@@ -27,10 +30,7 @@ module.exports = {
                         },
                         password: {
                           type: 'string',
-                          minLength: 6,
-                        },
-                        phoneNumber: {
-                          type: 'string',
+                          format: 'uuid',
                         },
                         providerId: {
                           type: 'string',
@@ -45,13 +45,10 @@ module.exports = {
                               type: 'array',
                               items: {
                                 type: 'string',
-                                format: 'uuid',
-                              },
-                              required: true,
+                              },                             
                             },
                             total: {
-                              type: 'number',
-                              required: true,
+                              type: 'number',                             
                             },
                           },
                         },
@@ -60,15 +57,12 @@ module.exports = {
                           properties: {
                             _id: {
                               type: 'string',
-                              format: 'uuid',
                             },
                             country: {
                               type: 'string',
-                              required: true,
                             },
                             city: {
                               type: 'string',
-                              required: true,
                             },
                             state: {
                               type: 'string',
@@ -78,31 +72,55 @@ module.exports = {
                             },
                             street: {
                               type: 'string',
-                              required: true,
                             },
                             buildingNumber: {
                               type: 'number',
-                              required: true,
                             },
                             buildingName: {
                               type: 'string',
                             },
                             flatNumber: {
                               type: 'number',
-                              required: true,
                             },
                             floor: {
                               type: 'number',
-                              required: true,
                             },
                           },
                         },
+                        phoneNumber: {
+                          type: 'string',
+                        },
                       },
+                      example: {
+                        _id: "5678zuidfgh87oi6789",
+                        firstName: "john",
+                        lastName: "Mac",
+                        email: "mac@mail.com",
+                        password: "f678oiuj89ziiho87uidj",
+                        cart:{
+                          itemId: ["5678ziutg87"],
+                          total: 65,
+                          _id: "768ziudhgfj7z8iu"
+                        },
+                        address: {
+                          id: "768uigdfhjbdfzug",
+                          country: "Turkey",
+                          city: "Istanbul",
+                          street: "324 cd",
+                          buildingNumber: "667 C",
+                          flatNumber: 4,
+                          floor: 4,
+                        },
+                        phoneNumber: "435267578"
+                      }
                     },
                   },
                 },
               },
             },
+          },
+          400: {
+            description: 'You are not authorized ',
           },
         },
       },
@@ -180,57 +198,20 @@ module.exports = {
                 schema: {
                   type: 'object',
                   properties: {
-                    phoneNumber: {
-                      type: 'string',
-                    },
-                    profilePicture: {
-                      type: 'string',
-                    },
-                    firstName: {
-                      type: 'string',
-                    },
-                    lastName: {
-                      type: 'string',
-                    },
-                    address: {
-                      type: 'object',
-                      properties: {
-                        country: {
-                          type: 'string',
-                          required: true,
-                        },
-                        city: {
-                          type: 'string',
-                          required: true,
-                        },
-                        state: {
-                          type: 'string',
-                        },
-                        zipcode: {
-                          type: 'number',
-                        },
-                        street: {
-                          type: 'string',
-                          required: true,
-                        },
-                        buildingNumber: {
-                          type: 'number',
-                          required: true,
-                        },
-                        buildingName: {
-                          type: 'string',
-                        },
-                        flatNumber: {
-                          type: 'number',
-                          required: true,
-                        },
-                        floor: {
-                          type: 'number',
-                          required: true,
-                        },
-                      },
-                    },
                   },
+                  example: {
+                    UpdatedCustomer: {
+                      country: "Turkey",
+                      city: "Eskisehir",
+                      street: "34 Cf",
+                      buildingNumber: "13 C",
+                      flatNumber: 4,
+                      floor: 35
+                    } ,
+                    phoneNumber: 546274856,
+                    firstName:"John",
+                    lastName: "Kisi"
+                  }
                 },
               },
             },
@@ -254,15 +235,16 @@ module.exports = {
           200: {
             description: 'Successful response indicating user is deleted and logged out',
             content: {
-              'application/json': {
+              'text/plain': {
                 schema: {
                   type: 'string',
+                  example: "Your account was Deleted Succesfully"
                 },
               },
             },
           },
-          default: {
-            description: 'Unexpected error',
+          400: {
+            description: 'You are not authorized ',
           },
         },
       },
@@ -282,33 +264,21 @@ module.exports = {
                   properties: {
                     customer: {
                       type: 'object',
-                      properties: {
-                        cart: {
-                          type: 'object',
-                          properties: {
-                            itemId: {
-                              type: 'array',
-                              items: {
-                                type: 'string',
-                                format: 'uuid',
-                              },
-                              required: true,
-                            },
-                            total: {
-                              type: 'number',
-                              required: true,
-                            },
-                          },
+                      example: {
+                        cart : {
+                          itemId: ["68674f567464","67895v78r54r"],
+                          total: 50,
+                          _id:"65876g7r76e4ve546e56"
                         },
-                      },
+                      }
                     },
                   },
                 },
               },
             },
           },
-          default: {
-            description: 'Unexpected error',
+          400: {
+            description: ' Bad request',
           },
         },
       },
@@ -324,30 +294,19 @@ module.exports = {
                 schema: {
                   type: 'object',
                   properties: {
-                    cart: {
-                      type: 'object',
-                      properties: {
-                        itemId: {
-                          type: 'array',
-                          items: {
-                            type: 'string',
-                            format: 'uuid',
-                          },
-                          required: true,
-                        },
-                        total: {
-                          type: 'number',
-                          required: true,
-                        },
-                      },
-                    },
+                 
                   },
+                  example: {
+                    itemId: [],
+                    total: 0,
+                    _Id:"8675g775675"
+                  }
                 },
               },
             },
           },
-          default: {
-            description: 'Unexpected error',
+          400: {
+            description: ' Bad Request',
           },
         },
       },
@@ -383,9 +342,24 @@ module.exports = {
                 schema: {
                   type: 'object',
                   properties: {
-                    updatedCustomer: {
+                    UpdatedCustomer: {
                       type: 'object',
                       properties: {
+                        _id : {
+                          type: "string"
+                        },
+                        firstname : {
+                          type: "string"
+                        },
+                        lastName : {
+                          type: "string"
+                        },
+                        email : {
+                          type: "string"
+                        },
+                        password : {
+                          type: "string"
+                        },
                         cart: {
                           type: 'object',
                           properties: {
@@ -406,6 +380,24 @@ module.exports = {
                       },
                     },
                   },
+                  example: {
+                    _id: "657tguz89u£$",
+                    firstName : "example",
+                    lastName : "example",
+                    email: "example@example.com",
+                    password: "$657890dsafffseec3",
+                    cart: {
+                      itemId:[ 
+                        "6457832tjhdg8375",
+                        "875734537z32876c7"
+                      ],
+                      total: 76,
+                      id: "76z87zd589o0ui"
+                    },
+                     address: "64cd331e708dc7849a6ccd4d",
+                     phoneNumber: "354678903",
+                     profilePicture: "string"
+                  }
                 },
               },
             },

@@ -29,7 +29,7 @@ const ROUTES = {
 
 };
 
-const items = { itemId: ['64bc5e0196f2c61b22b3bc6a'] };
+const items = { itemId: ['64caa71b777867d29fd25bce'] };
 
 const customer1 = {
   email: 'iroda@gmail.com',

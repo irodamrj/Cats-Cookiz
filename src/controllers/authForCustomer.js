@@ -5,6 +5,7 @@ const CustomError = require('../errors');
 const Customer = require('../models/customer');
 const bcrypt = require('bcryptjs');
 const { createUserToken } = require('../utils/createToken');
+const sendEmail = require('../utils/sendEmail');
 
 //local signup
 const signup = async (req, res) => {
@@ -30,6 +31,7 @@ const signup = async (req, res) => {
   });
   const payload = createUserToken(customer);
   attachCookiesToResponse(res, payload);
+  sendEmail(email, 'customer');
   return res.status(StatusCodes.CREATED).json({ customer });
 };
 

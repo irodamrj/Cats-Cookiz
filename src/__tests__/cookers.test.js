@@ -127,14 +127,14 @@ describe('Cookers', () => {
   describe('When there is a cooker in session', () => {
     const userlogin = request.agent(app);
     const usersignup = request.agent(app);
-    const orderId = '64bc5ea696f2c61b22b3bc8a';
+    const orderId = '64caa74d777867d29fd25beb';
     let dishId;
 
     beforeAll(async () => {
       await userlogin
         .post(ROUTES.COOK_LOGIN)
         .type('form')
-        .send(objToUrlEncoded(user1))
+        .send(user1)
         .set('Accept', 'application/json');
       await usersignup
         .post(ROUTES.COOK_SIGNUP)
@@ -282,13 +282,14 @@ describe('Cookers', () => {
         .post(ROUTES.COOK_PAYMENT)
         .type('form')
         .send({ paymentType: type })
-        .set('Accept', 'application/json')
         .expect('Content-Type', /json/);
 
       const cook = await mongoose.connection
         .collection('cookers')
         .findOne({ email: userSignup.email });
-      console.log(cook.paymentType);
+
+      console.log(cook);
+
       expect(cook.paymentType).toContain(type);
       expect(cook.paymentType).not.toBe(null);
       expect(res.statusCode).toBe(200);
