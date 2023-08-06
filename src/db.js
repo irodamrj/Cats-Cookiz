@@ -29,6 +29,7 @@ module.exports = {
       customers: ['64bc5e2796f2c61b22b3bc6f'],
       orders: ['64bc5ea696f2c61b22b3bc8a'],
       dishes: ['64bc5e0196f2c61b22b3bc6a'],
+      admins:['64ca92ed31c833a16dc4b2d3']
     };
     const collections = mongoose.connection.collections;
     for (const key in collections) {

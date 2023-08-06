@@ -12,6 +12,21 @@ const ROUTES = {
   CUSTOMER_SIGNUP: '/api/auth/customer/signup',
   CUSTOMER_ORDERS: '/api/customer/order',
   CUSTOMER_CART: '/api/customer/cart',
+  ADMIN_LOGIN: '/api/auth/admin/login',
+  ADMIN_COOKER: '/api/admin/cooker',  
+  ADMIN_CUSTOMER: '/api/admin/customer',
+  ADMIN_ORDER: '/api/admin/order',
+  ADMIN_CUSTOMERS: '/api/admin/customers',
+  ADMIN_COOKERS: '/api/admin/cookers',
+  ADMIN_DISHES: '/api/admin/dishes',
+  PUBLIC_HOME: '/home',
+  PUBLIC_DISH: '/home/dish',
+  PUBLIC_ABOUT: '/home/about',
+  PUBLIC_COOKERS: '/home/cookers',
+
+ 
+
+
 };
 
 const items = { itemId: ['64bc5e0196f2c61b22b3bc6a'] };
@@ -21,13 +36,14 @@ const customer1 = {
   password: '123456',
 };
 
-// const customerSignup = {
-//   firstName: 'iroda',
-//   lastName: 'yılmaz',
-//   email: 'first@gmail.com',
-//   password: '123456',
-// };
-
+const wrongAdmin = {
+  username: 'test',
+  password: '123456',
+};
+const admin = {
+  username: 'admin',
+  password: '123456',
+};
 const comments = {
   rating: 2.3,
   commentText: 'not Good Service',
@@ -86,4 +102,6 @@ module.exports = {
   customerSignup,
   items,
   comments,
+  admin,
+  wrongAdmin
 };
