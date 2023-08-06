@@ -2,7 +2,7 @@ const {
     ROUTES,
     customer1,
     customerSignup,
-    items,
+    items,user1,
     comments,
   } = require('../data');
   jest.setTimeout(15000);
@@ -19,23 +19,18 @@ const {
 
   
       const customerlogin = request.agent(app);
-      const customersignup = request.agent(app);
-      // let orderId;
-      // let custId;
-      // let cookerId;
+      let dishId="64caa71b777867d29fd25bce";
+      let cookerId="64caa707777867d29fd25bc6";
+ 
   
-      // beforeAll(async () => {
-      //   await customerlogin
-      //     .post(ROUTES.CUSTOMER_LOGIN)
-      //     .type('form')
-      //     .send(customer1)
-      //     .set('Accept', 'application/json');
-      //   await customersignup
-      //     .post(ROUTES.CUSTOMER_SIGNUP)
-      //     .type('form')
-      //     .send(customerSignup)
-      //     .set('Accept', 'application/json');
-      // });
+      beforeAll(async () => {
+        await customerlogin
+          .post(ROUTES.COOK_LOGIN)
+          .type('form')
+          .send(user1)
+          .set('Accept', 'application/json');
+  
+      });
   
       afterAll(async () => db.clearDatabase());
   
@@ -49,11 +44,15 @@ const {
       });
 
        it('Get /home/dish/id should return dish', async () => {
-        const res = await request.agent(app).get(`${ROUTES.PUBLIC_DISH}/dishId`);
-        const dish = await mongoose.connection
+        const res = await request.agent(app).get(`${ROUTES.PUBLIC_DISH}/${dishId}`);
+        console.log(res.body.dish)
+        const myObjectId = new mongoose.Types.ObjectId(dishId);
+        const dishItem = await mongoose.connection
         .collection('dishes')
-        .findOne({ _id:'dishId' });
-        expect(res.body).toMatchObject(dish);
+        .findOne({_id:myObjectId});
+
+        expect(res.body.dish._id).toBe(dishItem._id.toHexString()); 
+        expect(dishItem).not.toBe(undefined);
         expect(res.statusCode).toBe(200);
         expect(res.body).not.toBe(undefined);
       });
@@ -72,11 +71,13 @@ const {
         expect(res.statusCode).toBe(200);
       });
       it('Get /home/cookers/id should return dish', async () => {
-        const res = await request.agent(app).get(`${ROUTES.PUBLIC_COOKERS}/cookerId`);
-        const dish = await mongoose.connection
+        const res = await request.agent(app).get(`${ROUTES.PUBLIC_COOKERS}/${cookerId}`);
+        const myCookerId = new mongoose.Types.ObjectId(cookerId);
+
+        const cooker = await mongoose.connection
         .collection('cookers')
-        .findOne({ _id:'cookerId' });
-        expect(res.body).toMatchObject(dish);
+        .findOne({ _id:myCookerId});
+        expect(res.body.cooker._id).toBe(cooker._id.toHexString()); 
         expect(res.statusCode).toBe(200);
         expect(res.body).not.toBe(undefined);
       });

@@ -25,10 +25,11 @@ module.exports = {
   clearDatabase: async () => {
     const keepIDs = {
       cookers: ['64caa707777867d29fd25bc6'],
-      addresses: ['64caa707777867d29fd25bc4', '64caa73c777867d29fd25bd7'],
+      addresses: ['64caa707777867d29fd25bc4', '64caa73c777867d29fd25bd7',],
       customers: ['64caa734777867d29fd25bd2'],
       orders: ['64caa74d777867d29fd25beb'],
       dishes: ['64caa71b777867d29fd25bce'],
+      admins:['64cf778e62bdd3fc41feea15']
     };
     const collections = mongoose.connection.collections;
     for (const key in collections) {

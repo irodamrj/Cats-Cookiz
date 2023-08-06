@@ -1,4 +1,7 @@
 const ROUTES = {
+  GOOGLE_AUTH:'/api/auth/customer/google',
+  FACEBOOK_AUTH:'/api/auth/customer/facebook',
+
   COOK_PROFILE: '/api/cooker',
   COOK_ORDERS: '/api/cooker/orders',
   COOK_DISHES: '/api/cooker/dishes',
@@ -23,6 +26,7 @@ const ROUTES = {
   PUBLIC_DISH: '/home/dish',
   PUBLIC_ABOUT: '/home/about',
   PUBLIC_COOKERS: '/home/cookers',
+  ORDER:'/api/customer/order'
 
  
 
@@ -93,6 +97,18 @@ const customerSignup = {
   password: '123456',
 };
 
+
+const orderSignup={"dishes":["64caa71b777867d29fd25bce"]
+,"customerId":"64caa734777867d29fd25bd2",
+"cookerId":"64caa707777867d29fd25bc6",
+"status":"Delivered",
+"deliveryAddress":"64caa73c777867d29fd25bd7",
+"expectedDeliveryTime":"30 Minutes"
+,"totalAmount":20,
+"isAddressNew":false,
+}
+const GOOGLE_REDIRECT_URL='http://localhost:5000/api/auth/customer/google/callback';
+const FACEBOOK_REDIRECT_URL='http://localhost:3000/api/auth/facebook/callback';
 module.exports = {
   ROUTES,
   user1,
@@ -103,5 +119,6 @@ module.exports = {
   items,
   comments,
   admin,
-  wrongAdmin
+  wrongAdmin,orderSignup,GOOGLE_REDIRECT_URL,FACEBOOK_REDIRECT_URL,
+  customer
 };

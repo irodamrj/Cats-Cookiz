@@ -1,13 +1,11 @@
-const { ROUTES, customer, incorrectUser, customerSignup } = require('../data');
+const { ROUTES, customer, incorrectUser, customerSignup,GOOGLE_REDIRECT_URL,FACEBOOK_REDIRECT_URL } = require('../data');
 jest.setTimeout(15000);
 
 const app = require('../app');
 const request = require('supertest');
-const req = require('supertest')(app);
 const db = require('../db');
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
-const passport = require('passport');
 
 process.env.NODE_ENV = 'test';
 afterAll(async () => await db.closeDatabase());
@@ -19,83 +17,57 @@ function objToUrlEncoded(obj) {
 
   return parts.join('&');
 }
-const URL_REGEX='http://localhost:5000/api/auth/customer/google/callback';
+
+
 describe('Customers', () => {
     describe('Customer authentication', () => {
       describe('GET /api/auth/google', () => {
-    //     it('Redirects with correct scope and credentials', async () => {
-    //       const res = await req.get('/api/auth/customer/google');
-    //       const location = res.header['location'];
-    
-    //       expect(location).not.toBeNull();
-    // console.log(location)
-    //       const uri = new URL(location);
-    //       const scope = uri.searchParams.get('scope')?.split(' ') ?? [];
-    //       const redirectTo = uri.searchParams.get('redirect_uri') ?? '';
-    //       const client_id = uri.searchParams.get('client_id') ?? '';
-    
-    //       expect(scope).toEqual(
-    //         expect.arrayContaining(['openid', 'email', 'profile'])
-    //       );
-    //       expect(redirectTo).toMatch(URL_REGEX);
-    //       expect(client_id.length).toBeGreaterThan(10);
-    
-    //       if (redirectTo) redirectUri = new URL(redirectTo);
-    //     });
         it('Redirects with correct scope and credentials', async () => {
-          const res = await req.get('/api/auth/customer/google/callback');
+          const res = await req.get(ROUTES.GOOGLE_AUTH);
           const location = res.header['location'];
     
-          expect(location).not.toBeNull();
-           console.log(`url ${location}`)
           const uri = new URL(location);
-          console.log(uri.searchParams)
           const scope = uri.searchParams.get('scope')?.split(' ') ?? [];
           const redirectTo = uri.searchParams.get('redirect_uri') ?? '';
           const client_id = uri.searchParams.get('client_id') ?? '';
 
-          for (const [key, value] of uri.searchParams) {
-            console.log(key, value);
-          }
-          //  scope.forEach((e)=>console.log(e))
-          // expect(scope).toEqual(
-          //   expect.arrayContaining(['openid', 'email', 'profile'])
-          // );
-          expect(redirectTo).toMatch(URL_REGEX);
+          expect(location).not.toBeNull();
+          expect(scope).toEqual(
+            expect.arrayContaining(['openid', 'email', 'profile'])
+          );
+          expect(redirectTo).toMatch(GOOGLE_REDIRECT_URL);
+          expect(client_id.length).toBeGreaterThan(10);
+    
+          if (redirectTo) redirectUri = new URL(redirectTo);
+        });
+
+      });
+
+      describe('GET /api/auth/facebook', () => {
+      it('Redirects with correct scope and credentials', async () => {
+         
+        const res =  await req 
+          .get(ROUTES.FACEBOOK_AUTH)
+          .send()
+          .expect(302); 
+          const location = res.header['location'];
+  
+          expect(location).not.toBeNull();
+
+          const uri = new URL(location);
+
+          const scope = uri.searchParams.get('scope')?.split(' ') ?? [];
+          const redirectTo = uri.searchParams.get('redirect_uri') ?? '';
+          const client_id = uri.searchParams.get('client_id') ?? '';
+
+          expect(scope).toEqual(
+            expect.arrayContaining(["public_profile,email"])
+          );
+          expect(redirectTo).toMatch(FACEBOOK_REDIRECT_URL);
           expect(client_id.length).toBeGreaterThan(10);
           expect(res.statusCode).toBe(302);
-
-          // if (redirectTo) redirectUri = new URL(redirectTo);
-        });
-
-         it('Redirects to facebook authorization page', async () => {
-         
-          const res =  await req 
-            .get('/api/auth/customer/facebook/callback')
-            .send()
-            .expect(302); 
-            const location = res.header['location'];
-    
-            expect(location).not.toBeNull();
-             console.log(`url ${location}`)
-            const uri = new URL(location);
-            console.log(uri.searchParams)
-            const scope = uri.searchParams.get('scope')?.split(' ') ?? [];
-            const redirectTo = uri.searchParams.get('redirect_uri') ?? '';
-            const client_id = uri.searchParams.get('client_id') ?? '';
-  
-            for (const [key, value] of uri.searchParams) {
-              console.log(key, value);
-            }
-            //  scope.forEach((e)=>console.log(e))
-            // expect(scope).toEqual(
-            //   expect.arrayContaining(['openid', 'email', 'profile'])
-            // );
-            expect(redirectTo).toMatch('http://localhost:3000/api/auth/facebook/callback');
-            expect(client_id.length).toBeGreaterThan(10);
-            expect(res.statusCode).toBe(302);
-        });
       });
+    });
       describe('Customer login', () => {
         it('Should return status code 200 and login user', async () => {
           const res = await request(app)
@@ -221,8 +193,7 @@ describe('Customers', () => {
     describe('When there is a customer in session', () => {
       const userlogin = request.agent(app);
       const usersignup = request.agent(app);
-      // const orderId = '64bc5ea696f2c61b22b3bc8a';
-      // let dishId;
+   
   
       beforeAll(async () => {
         await userlogin
@@ -306,11 +277,10 @@ describe('Customers', () => {
       it('Patch customer/cart should update cart status', async () => {
         const res = await userlogin
           .patch(ROUTES.CUSTOMER_CART)
-         .send(  {
+         .send({
           'cart.itemId': [],
-          'cart.total': 0,
-        },)
-          .expect('Content-Type', /json/);
+          'cart.total': 0,})
+  
         expect(res.statusCode).toBe(200);
       });
   
@@ -328,8 +298,7 @@ describe('Customers', () => {
       //     .expect('Content-Type', /json/);
       //   expect(res.statusCode).toBe(201);
       // });
-     
-     
+
     });
   });
   

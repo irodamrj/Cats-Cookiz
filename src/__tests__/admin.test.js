@@ -1,220 +1,226 @@
-// const { ROUTES, admin, wrongAdmin, customerSignup } = require('../data');
-// jest.setTimeout(15000);
+const { ROUTES, admin, wrongAdmin, customerSignup,userSignup,orderSignup } = require('../data');
+jest.setTimeout(15000);
 
-// const app = require('../app');
-// const request = require('supertest');
-// const req = require('supertest')(app);
-// const db = require('../db');
-// const bcrypt = require('bcryptjs');
-// const mongoose = require('mongoose');
-// const passport = require('passport');
+const app = require('../app');
+const request = require('supertest');
+const req = require('supertest')(app);
+const db = require('../db');
+const bcrypt = require('bcryptjs');
+const mongoose = require('mongoose');
+const passport = require('passport');
 
-// process.env.NODE_ENV = 'test';
-// afterAll(async () => await db.closeDatabase());
+process.env.NODE_ENV = 'test';
+afterAll(async () => await db.closeDatabase());
 
-// function objToUrlEncoded(obj) {
-//   const keys = Object.keys(obj);
-//   const values = Object.values(obj);
-//   const parts = keys.map((key, i) => `${key}=${values[i]}`);
+function objToUrlEncoded(obj) {
+  const keys = Object.keys(obj);
+  const values = Object.values(obj);
+  const parts = keys.map((key, i) => `${key}=${values[i]}`);
 
-//   return parts.join('&');
-// }
-// describe('Admin', () => {
-//     describe('Admin authentication', () => {
+  return parts.join('&');
+}
+describe('Admin', () => {
+    describe('Admin authentication', () => {
 
-//       describe('Admin login', () => {
-//         it('Should return status code 200 and login admin', async () => {
-//           const res = await request(app)
-//             .post(ROUTES.ADMIN_LOGIN)
-//             .type('form')
-//             .send(objToUrlEncoded(admin))
-//             .set('Accept', 'application/json')
-//             .expect('Content-Type', /json/);
-//           expect(res.statusCode).toBe(200);
-//         });
+      describe('Admin login', () => {
+        it('Should return status code 200 and login admin', async () => {
+          const res = await request(app)
+            .post(ROUTES.ADMIN_LOGIN)
+            .type('form')
+            .send(objToUrlEncoded(admin))
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /json/);
+          expect(res.statusCode).toBe(200);
+        });
   
-//         it('Should return status code 401 if credentials are invalid', async () => {
-//           const res = await request(app)
-//             .post(ROUTES.ADMIN_LOGIN)
-//             .type('form')
-//             .send(objToUrlEncoded(wrongAdmin))
-//             .set('Accept', 'application/json');
-//           expect(res.statusCode).toBe(401);
-//         });
+        it('Should return status code 401 if credentials are invalid', async () => {
+          const res = await request(app)
+            .post(ROUTES.ADMIN_LOGIN)
+            .type('form')
+            .send(objToUrlEncoded(wrongAdmin))
+            .set('Accept', 'application/json');
+          expect(res.statusCode).toBe(401);
+        });
   
-//         it('Should return status code 400 if credentials are missing', async () => {
-//           const res = await request(app)
-//             .post(ROUTES.ADMIN_LOGIN)
-//             .type('form')
-//             .send({ password: '123456' })
-//             .set('Accept', 'application/json');
-//           expect(res.statusCode).toBe(400);
-//         });
-//       });
+        it('Should return status code 400 if credentials are missing', async () => {
+          const res = await request(app)
+            .post(ROUTES.ADMIN_LOGIN)
+            .type('form')
+            .send({ password: '123456' })
+            .set('Accept', 'application/json');
+          expect(res.statusCode).toBe(400);
+        });
+      });
   
     
-//     });
+    });
   
-//     describe('When there is not a admin in session', () => {
-//       const cookerId='64bc5d6de3d1f3423fd7952f';
-//       const orderId='64bc5ea696f2c61b22b3bc8a';
+    describe('When there is not a admin in session', () => {
+  
 
-//       const customerId='64bc5e2796f2c61b22b3bc6f';
+      const user = request.agent(app);
+      const cooker = request.agent(app);
+      const customer = request.agent(app);
+      const order = request.agent(app);
 
-//       const user = request.agent(app);
+      beforeAll(async () => {
+        await customer
+        .post(ROUTES.CUSTOMER_SIGNUP)
+        .type('form')
+        .send(customerSignup)
+        .set('Accept', 'application/json');
+       
+          await cooker
+          .post(ROUTES.COOK_SIGNUP)
+          .type('form')
+          .send(userSignup)
+          .set('Accept', 'application/json');
+          await order
+          .post(ROUTES.ORDER)
+          .type('form')
+          .send(orderSignup)
+          .set('Accept', 'application/json');
+      });
   
-//       it('Delete /api/admin/cooker/id should redirect to login page', async () => {
-//          const res = await user.delete(`${ROUTES.ADMIN_COOKER}/${cookerId}`);
-//         expect(res.statusCode).toBe(302);
-//         expect(res.header['location']).toBe(ROUTES.ADMIN_LOGIN);
-//       });
+      afterAll(async () => db.clearDatabase());
+  
+      it('Delete /api/admin/cooker/id should redirect to login page', async () => {
+        
+         const res = await user.delete(`${ROUTES.ADMIN_COOKER}/${cooker._id}`);
+        expect(res.statusCode).toBe(302);
+        expect(res.header['location']).toBe(ROUTES.ADMIN_LOGIN);
+      });
 
-//       it('Delete /api/admin/customer/id should redirect to login page', async () => {
-//         const res = await user.delete(`${ROUTES.ADMIN_CUSTOMER}/${customerId}`);
-//        expect(res.statusCode).toBe(302);
-//        expect(res.header['location']).toBe(ROUTES.ADMIN_LOGIN);
-//      });
+      it('Delete /api/admin/customer/id should redirect to login page', async () => {
+        const res = await user.delete(`${ROUTES.ADMIN_CUSTOMER}/${customer._id}`);
+       expect(res.statusCode).toBe(302);
+       expect(res.header['location']).toBe(ROUTES.ADMIN_LOGIN);
+     });
 
-//       it('Patch /api/admin/order/id should redirect to login page', async () => {
-//         const res = await user.patch(`${ROUTES.ADMIN_ORDER}/${orderId}`);
-//         expect(res.statusCode).toBe(302);
-//         expect(res.header['location']).toBe(ROUTES.ADMIN_LOGIN);
-//       });
-//       it('Get /api/admin/customers', async () => {
-//         const res = await user.get(ROUTES.ADMIN_CUSTOMERS);
-//         expect(res.statusCode).toBe(302);
-//         expect(res.header['location']).toBe(ROUTES.ADMIN_LOGIN);
-//       });
-  
-//       it('Get /api/admin/cookers', async () => {
-//         const res = await user.get(ROUTES.ADMIN_COOKERS);
-//         expect(res.statusCode).toBe(302);
-//         expect(res.header['location']).toBe(ROUTES.ADMIN_LOGIN);
-//       });
-//       it('Get /api/admin/dishes', async () => {
-//         const res = await user.get(ROUTES.ADMIN_DISHES);
-//         expect(res.statusCode).toBe(302);
-//         expect(res.header['location']).toBe(ROUTES.ADMIN_LOGIN);
-//       });
-    
-  
-  
-     
-//     });
-  
-//     describe('When there is a customer in session', () => {
-//       const adminlogin = request.agent(app);
-//       const cookerId='64bc5d6de3d1f3423fd7952f';
-//       const orderId='64bc5ea696f2c61b22b3bc8a';
+      it('Patch /api/admin/order/id should redirect to login page', async () => {
+        const res = await user.patch(`${ROUTES.ADMIN_ORDER}/${order._id}`);
+        expect(res.statusCode).toBe(302);
+        expect(res.header['location']).toBe(ROUTES.ADMIN_LOGIN);
+      });
 
-//       const customerId='64bc5e2796f2c61b22b3bc6f';
+      it('Get /api/admin/customers', async () => {
+        const res = await user.get(ROUTES.ADMIN_CUSTOMERS);
+        expect(res.statusCode).toBe(302);
+        expect(res.header['location']).toBe(ROUTES.ADMIN_LOGIN);
+      });
   
-//       beforeAll(async () => {
-//         await adminlogin
-//           .post(ROUTES.ADMIN_LOGIN)
-//           .type('form')
-//           .send(objToUrlEncoded(admin))
-//           .set('Accept', 'application/json');
-//       });
+      it('Get /api/admin/cookers', async () => {
+        const res = await user.get(ROUTES.ADMIN_COOKERS);
+        expect(res.statusCode).toBe(302);
+        expect(res.header['location']).toBe(ROUTES.ADMIN_LOGIN);
+      });
+      it('Get /api/admin/dishes', async () => {
+        const res = await user.get(ROUTES.ADMIN_DISHES);
+        expect(res.statusCode).toBe(302);
+        expect(res.header['location']).toBe(ROUTES.ADMIN_LOGIN);
+      });
+    });
   
-//       afterAll(async () => db.clearDatabase());
+    describe('When there is a admin in session', () => {
+      const adminlogin = request.agent(app);
+      const customerSignupRoute = request.agent(app);
+      const orderId = '64caa74d777867d29fd25beb';
+      const cookerSignup = request.agent(app);
+
+      beforeAll(async () => {
+        await customerSignupRoute
+        .post(ROUTES.CUSTOMER_SIGNUP)
+        .type('form')
+        .send(customerSignup)
+        .set('Accept', 'application/json');
+        
+        await cookerSignup
+        .post(ROUTES.COOK_SIGNUP)
+        .type('form')
+        .send(userSignup)
+        .set('Accept', 'application/json');
+
+          await adminlogin
+          .post(ROUTES.ADMIN_LOGIN)
+          .type('form')
+          .send(objToUrlEncoded(admin))
+          .set('Accept', 'application/json');
+      });
+
+      afterAll(async () => db.clearDatabase());
   
-//       it('Delete cooker/:id should delete cooker profile as json', async () => {
-//         const res = await adminlogin
-//           .delete(`${ROUTES.ADMIN_COOKER}/${cookerId}`)
-//           .set('Accept', 'application/json')
-//           .expect('Content-Type', /json/);
-//         const cooker = await mongoose.connection
-//           .collection('cookers')
-//           .findOne({ _id: cookerId });
-//         expect(cooker).toBe(null);
-//         expect(res.statusCode).toBe(200);
-//       });
-  
-//       // it('Patch customer/ should update customer profile', async () => {
-//       //   const updatedProperty = {
-//       //   firstName : "sara", 
-//       //   lastName: "ss", 
-//       //   phoneNumber: 1111,
-//       //    address:{  
-//       //     "country":"izmit",
-//       //     "city":"izmit",
-//       //     "state":"kk",
-//       //    "zipcode":34,
-//       //    "street":"33 cd",
-//       //    "buildingNumber":"3A",
-//       //    "flatNumber":2,
-//       //    "floor":12
-//       //        }
-//       //    }
-//       //   const res = await usersignup
-//       //   .patch(ROUTES.CUSTOMER_PROFILE)
-//       //     .type('form')
-//       //     .send(updatedProperty)
-//       //     .set('Accept', 'application/json')
-//       //     .expect('Content-Type', /json/);
-  
-//       //   const customer = await mongoose.connection
-//       //     .collection('customers')
-//       //     .findOne({ email: customerSignup.email });
-//       //   const address = await mongoose.connection
-//       //     .collection('addresses')
-//       //     .findOne({ _id: customer.address });
-//       //   expect(address).toMatchObject(updatedProperty.address);
-  
-//       //   expect(res.statusCode).toBe(200);
-//       // });
+      it('Delete cooker/:id should delete cooker profile as json', async () => {
+        const cooker = await cookerSignup
+        .get(ROUTES.COOK_PROFILE)
+        .expect('Content-Type', /json/);
+        const cookerId=cooker.body.cooker._id
+        const res = await adminlogin
+          .delete(`${ROUTES.ADMIN_COOKER}/${cookerId}`)
+          .set('Accept', 'application/json')
+          .expect('Content-Type', /json/);
       
-//       // it('Delete customer/ should customer profile', async () => {
-//       //   const customer = await mongoose.connection
-//       //   .collection('customers')
-//       //   .findOne({ email: customerSignup.email },);
-//       //   const res = await usersignup
-//       //     .delete(ROUTES.CUSTOMER_PROFILE)
-//       //     .set('Accept', 'application/json')
-//       //     .expect('Content-Type', /json/);
+        const deletedCooker = await mongoose.connection
+          .collection('cookers')
+          .findOne({ _id: cookerId });
+      
+        expect(deletedCooker).toBe(null);
+        expect(res.statusCode).toBe(200);
+      });
 
-//       //   const customerAddress = await mongoose.connection
-//       //     .collection('addresses')
-//       //     .findOne({ _id: customer.address._id });
-//       //   expect(customerAddress).toBe(null);
-//       //   expect(res.statusCode).toBe(200);
-//       // });
-  
-//       // it('get customer/cart should return cart of a customer', async () => {
-//       //   const res = await userlogin
-//       //     .get(ROUTES.CUSTOMER_CART)
-//       //     .expect('Content-Type', /json/);
-//       //   expect(res.statusCode).toBe(200);
-//       // });
-  
-//       // it('Patch customer/cart should update cart status', async () => {
-//       //   const res = await userlogin
-//       //     .patch(ROUTES.CUSTOMER_CART)
-//       //    .send(  {
-//       //     'cart.itemId': [],
-//       //     'cart.total': 0,
-//       //   },)
-//       //     .expect('Content-Type', /json/);
-//       //   expect(res.statusCode).toBe(200);
-//       // });
-  
-//       // // it('Post  customer/cart add new items to cart', async () => {
-//       // //   const newDish = {
-//       // //     name: 'pizza',
-//       // //     description: 'mozarella and mushroom',
-//       // //     price: 16,
-//       // //   };
-//       // //   const res = await userlogin
-//       // //     .post(ROUTES.CUSTOMER_CART)
-//       // //     .type('form')
-//       // //     .send(newDish)
-//       // //     .set('Accept', 'application/json')
-//       // //     .expect('Content-Type', /json/);
-//       // //   expect(res.statusCode).toBe(201);
-//       // // });
-     
-     
-//     });
-//   });
+
+      it('Delete customer/:id should delete customer profile as json', async () => {
+        const customer = await customerSignupRoute
+        .get(ROUTES.CUSTOMER_PROFILE)
+        .expect('Content-Type', /json/);
+        const customerId=customer.body.customer._id
+        const res = await adminlogin
+          .delete(`${ROUTES.ADMIN_CUSTOMER}/${customerId}`)
+          .set('Accept', 'application/json')
+          .expect('Content-Type', /json/);
+      
+        const deletedCustomer = await mongoose.connection
+          .collection('customers')
+          .findOne({ _id: customerId });
+      
+        expect(deletedCustomer).toBe(null);
+        expect(res.statusCode).toBe(200);
+      });
+
+      it('Patch order/:id should update order status', async () => {
+        const myObjectId = new mongoose.Types.ObjectId(orderId);
+
+        const res = await adminlogin
+          .patch(`${ROUTES.ADMIN_ORDER}/${orderId}`)
+          .type('form')
+          .send({ status: 'Cancelled' });
+      
+        const UpdatedOrder = await mongoose.connection
+          .collection('orders')
+          .findOne({ _id: myObjectId });
+      
+        expect(UpdatedOrder.status).toBe('Cancelled');
+        expect(res.statusCode).toBe(200);
+      });
+       
+    it('get /cookers should return cookers', async () => {
+        const res = await adminlogin
+          .get(ROUTES.ADMIN_COOKERS)
+          .expect('Content-Type', /json/);
+        expect(res.statusCode).toBe(200);
+      });
+        
+      it('get /customers should return customers', async () => {
+        const res = await adminlogin
+          .get(ROUTES.ADMIN_CUSTOMERS)
+          .expect('Content-Type', /json/);
+        expect(res.statusCode).toBe(200);
+      });
+      it('get /dishes should return dishes', async () => {
+        const res = await adminlogin
+          .get(ROUTES.ADMIN_DISHES)
+          .expect('Content-Type', /json/);
+        expect(res.statusCode).toBe(200);
+      });
+    });
+  });
   
