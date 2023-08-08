@@ -40,9 +40,7 @@ const updateProfile = async (req, res) => {
     { new: true }
   ).populate('address');
 
-  return res
-    .status(StatusCodes.OK)
-    .json(updatedCustomer + ' is updated successfully');
+  return res.status(StatusCodes.OK).json(updatedCustomer);
 };
 
 const deleteProfile = async (req, res) => {
