@@ -71,7 +71,6 @@ const getAnOrder = async (req, res) => {
 //just can mark a order as delivered
 const updateAnOrdersStatus = async (req, res) => {
   const orderId = req.params.id;
-  const orderStatus = req.body.orderStatus;
 
   const cooker = await Cooker.findOne({ email: req.auth.email }, { _id: 1 });
   const order = await Order.findOne({
@@ -86,6 +85,10 @@ const updateAnOrdersStatus = async (req, res) => {
     throw new CustomError.NotFoundError(`Order with Id ${orderId} not found`);
   }
 
+  if(order.status == "Cancelled"){
+    return res.status(StatusCodes.BAD_REQUEST).json("This order is cancelled.  Cannot be Delivered.")
+  }
+
   await Order.findByIdAndUpdate(
     { _id: orderId },
     { status: 'Delivered' },
@@ -95,7 +98,7 @@ const updateAnOrdersStatus = async (req, res) => {
   return res
     .status(StatusCodes.OK)
     .json(
-      `status of the order with Id ${orderId} is updated to ${orderStatus}`
+      `status of the order with Id ${orderId} is updated to Delivered.`
     );
 };
 

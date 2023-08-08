@@ -5,10 +5,10 @@ dotenv.config();
 
 const { DB_USER, DB_PASSWORD, DB_HOST } = process.env;
 
-// const DB_URI = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@capstone.rhcdace.mongodb.net/`;
+const DB_URI = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@capstone.rhcdace.mongodb.net/`;
 
 //for test
-const DB_URI = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@capstone.rhcdace.mongodb.net/testing`;
+// const DB_URI = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@capstone.rhcdace.mongodb.net/testing`;
 
 let uri = DB_URI;
 
