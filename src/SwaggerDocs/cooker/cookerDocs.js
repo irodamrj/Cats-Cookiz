@@ -295,27 +295,8 @@ module.exports = {
             in: 'path',
             description: 'ID of the order',
             required: true,
-            schema: {
-              type: 'string',
-            },
           },
         ],
-        requestBody: {
-          required: true,
-          content: {
-            'application/json': {
-              schema: {
-                type: 'object',
-                properties:{
-                  orderStatus:{
-                    type: "string",
-                    example: "Completed"
-                  }
-                }              
-              },
-            },
-          },
-        },
         responses: {
           200: {
             description: 'Successful response with updated order details',
