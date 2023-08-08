@@ -68,15 +68,16 @@ app.use(
     ],
   })
 );
-
 app.use(function (err, req, res, next) {
+  console.log(`test ${req.originalUrl}`)
+
   if (err.name === 'UnauthorizedError') {
-    if (req.originalUrl.includes('cooker')) {
-      return res.redirect('/api/auth/cooker/login');
+    if (req.originalUrl.includes('admin')) {
+      return res.redirect('/api/auth/admin/login');
     } else if (req.originalUrl.includes('customer')) {
       return res.redirect('/api/auth/customer/login');
     } else {
-      return res.redirect('/api/auth/admin/login');
+      return res.redirect('/api/auth/cooker/login');
     }
   } else {
     next(err);

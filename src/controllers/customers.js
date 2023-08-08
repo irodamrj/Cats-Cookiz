@@ -82,7 +82,6 @@ const resetCart = async (req, res) => {
 };
 
 const createCart = async (req, res) => {
-  //to add item to cart which is sepet
   const customer = await CustomerModel.findOne({ email: req.auth.email });
   const cartItemsIds = customer.cart.itemId.map((e) => e);
   const oldCooker = await Dish.findOne(
