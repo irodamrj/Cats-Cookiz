@@ -6,7 +6,7 @@
   "author": "Ammar-64",
   "license": "MIT",
   "scripts": {
-    "start": "node src/app.js",
+    "start": "nodemon src/app.js",
     "test": "jest"
   },
   "dependencies": {
