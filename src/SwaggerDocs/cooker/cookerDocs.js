@@ -345,7 +345,7 @@ module.exports = {
           },
         },
         responses: {
-          200: {
+          201: {
             description: 'Successful response with created dish',
             content: {
               'application/json': {

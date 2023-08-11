@@ -93,7 +93,7 @@ module.exports = {
           },
         },
         responses: {
-          200: {
+          201: {
             description: 'Successful operation',
             content: {
               'application/json': {
