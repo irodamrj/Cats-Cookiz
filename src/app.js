@@ -95,7 +95,6 @@ app.use('/api/customer/order', customerAuth, orderRoute);
 app.use('/home', publicRoute);
 
 app.use(notFoundMiddleware);
-app.use(errorHandlerMiddleware);
 
 const port = 5000;
 
